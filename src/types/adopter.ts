@@ -1,8 +1,8 @@
-import { Animal } from "./animal";
-import { City } from "./city";
-import { Term } from "./term";
-import { Audit } from "./audit";
-import { Pagination } from "./pagination";
+import {Animal} from "./animalAntigo";
+import {City} from "./city";
+import {Term} from "./term";
+import {Audit} from "./audit";
+import {Pagination} from "./pagination";
 import z from "zod";
 import {
   adopterFiltersSchema,

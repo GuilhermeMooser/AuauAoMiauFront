@@ -25,15 +25,11 @@ export default function AdopterCard({
   handleViewAdopter,
 }: AdopterCardProps) {
   const {
-    primaryContact,
     contactValue,
     isPhoneContact,
     isContactDue,
     daysUntilContact,
   } = useAdopterCard({ adopter });
-
-  const hasAnimals = adopter.animals?.length ?? 0 > 0;
-  const extraAnimals = (adopter.animals?.length ?? 0) - 3;
 
   return (
     <Card
@@ -48,11 +44,10 @@ export default function AdopterCard({
             </CardTitle>
 
             <Badge
-              className={`${
-                adopter.audit.deletedAt === null
-                  ? "bg-success text-success-foreground"
-                  : "bg-muted text-muted-foreground"
-              }`}
+              className={`${adopter.audit.deletedAt === null
+                ? "bg-success text-success-foreground"
+                : "bg-muted text-muted-foreground"
+                }`}
             >
               {adopter.audit.deletedAt === null ? "Ativo" : "Inativo"}
             </Badge>
@@ -140,8 +135,8 @@ export default function AdopterCard({
                       {daysUntilContact > 0
                         ? `em ${daysUntilContact} dias`
                         : daysUntilContact === 0
-                        ? "hoje"
-                        : `venceu há ${Math.abs(daysUntilContact)} dias`}
+                          ? "hoje"
+                          : `venceu há ${Math.abs(daysUntilContact)} dias`}
                       )
                     </span>
                   )}

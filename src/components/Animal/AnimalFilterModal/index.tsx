@@ -1,0 +1,146 @@
+import { useAnimalFilterModal } from "./useAnimalFilterModal";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+} from "@/components/ui/form";
+import { Filter, Search, X } from "lucide-react";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Button } from "@/components/ui/button";
+import Alert from "@/components/Alert";
+import { AnimalFilterFormData, AnimalFilters } from "@/types/animal";
+
+type AnimalFilterModalProps = {
+    isOpen: boolean;
+    activeFilters: AnimalFilters;
+    handleApplyFilter: (data: AnimalFilterFormData) => void;
+    handleClearFilter: () => void;
+    filtersCount?: number;
+}
+
+export default function AnimalFilterModal({
+    isOpen,
+    activeFilters,
+    handleApplyFilter,
+    handleClearFilter,
+    filtersCount = 0
+}: AnimalFilterModalProps) {
+
+    const {
+        form,
+        handleClear,
+    } = useAnimalFilterModal({ activeFilters })
+
+    return (
+        <>
+            {isOpen && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Filter className="h-5 w-5" />
+                            Filtros de Busca
+                            {filtersCount > 0 && (
+                                <Badge variant="secondary" className="ml-2">
+                                    {filtersCount} ativo
+                                    {filtersCount > 1 ? "s" : ""}
+                                </Badge>
+                            )}
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Form {...form}>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+                                <FormField
+                                    control={form.control}
+                                    name="createdAt"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Data de Cadastro (Início)</FormLabel>
+                                            <FormControl>
+                                                <DatePicker
+                                                    date={field.value}
+                                                    onDateChange={field.onChange}
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="dtOfAdoption"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Data de Adoção</FormLabel>
+                                            <FormControl>
+                                                <DatePicker
+                                                    date={field.value}
+                                                    onDateChange={field.onChange}
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="dtOfRescue"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Data de Resgate</FormLabel>
+                                            <FormControl>
+                                                <DatePicker
+                                                    date={field.value}
+                                                    onDateChange={field.onChange}
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="dtOfDeath"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Data de Morte</FormLabel>
+                                            <FormControl>
+                                                <DatePicker
+                                                    date={field.value}
+                                                    onDateChange={field.onChange}
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="flex items-end gap-x-2 justify-end">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => {
+                                        handleClear();
+                                        handleClearFilter();
+                                    }}
+                                >
+                                    <X className="h-4 w-4" />
+                                    Limpar Filtros
+                                </Button>
+                                <Button onClick={form.handleSubmit(handleApplyFilter)}>
+                                    <Search className="h-4 w-4" />
+                                    Aplicar Filtros
+                                </Button>
+                            </div>
+                        </Form>
+                    </CardContent>
+                </Card>
+            )}
+        </>
+    )
+
+}

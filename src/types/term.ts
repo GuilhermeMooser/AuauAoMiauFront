@@ -1,5 +1,5 @@
-import { AdopterAddress } from "./adopter";
-import { Animal } from "./animal";
+import {AdopterAddress} from "./adopter";
+import {Animal} from "./animalAntigo";
 
 export type Term = {
   id: string;

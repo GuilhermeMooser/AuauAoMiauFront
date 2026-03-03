@@ -2,10 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
-import AnimaisPage from "./pages/animais/page";
+import AnimaisPage from "./pages/animaisAntigo/page";
 // import AdotantesPage from "./pages/adotantesAntigo/page";
 import Termos from "./pages/Termos";
 import NotFound from "./pages/NotFound";
@@ -15,6 +15,7 @@ import Login from "./pages/login";
 import { getAuth } from "./utils/auth";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Users from "./pages/admin/users";
+import Animal from "./pages/admin/animal";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -24,7 +25,17 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}
+          {/* Redirect root to login */}
           <Route path="/login" element={<Login />} />
+
+          <Route
+            path="/"
+            element={
+              getAuth()
+                ? <Navigate to="/admin/dashboard" replace />
+                : <Navigate to="/login" replace />
+            }
+          />
 
           {/* Redirect root to dashboard */}
           {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
@@ -43,6 +54,17 @@ const App = () => (
 
           <Route
             path="/admin/animais"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Animal />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/animaisOld"
             element={
               <ProtectedRoute>
                 <DashboardLayout>
