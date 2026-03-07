@@ -1,6 +1,7 @@
 import {AnimalFilters, FindAllAnimalsPaginated} from "@/types/animal";
 import {addSearchParamsInUrl} from "@/utils/generatedPaginatedUrl";
 import {api} from "./api";
+import {AnimalType} from "@/types/animalType";
 
 export const getAnimalsPaginated = async (
   search?: string,
@@ -20,5 +21,10 @@ export const getAnimalsPaginated = async (
   );
 
   const response = await api.get<FindAllAnimalsPaginated>(url);
+  return response.data;
+};
+
+export const getAnimalTypes = async () => {
+  const response = await api.get<AnimalType[]>("/animal-type/v1");
   return response.data;
 };

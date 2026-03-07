@@ -7,6 +7,13 @@ import { InfiniteScrollContainer } from "@/components/InfiteScrollContainer";
 import { Button } from "@/components/ui/button";
 import { Plus, SunDim } from "lucide-react";
 import AnimalCard from "@/components/Animal/AnimalCard";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import AnimalForm from "@/components/Animal/AnimalForm";
 
 export default function Animal() {
 
@@ -35,7 +42,7 @@ export default function Animal() {
         isFetchingNextPage,
         hasNextPage,
         fetchNextPage,
-        // handleCreateSuccess,
+        handleCreateSuccess,
         // handleUpdateSuccess,
         // handleDeleteSuccess,
     } = useAnimal();
@@ -107,7 +114,50 @@ export default function Animal() {
                     </div>
                 )}
 
-
+                {/* Create Modal */}
+                <Dialog
+                    open={isCreateModalOpen}
+                    onOpenChange={handleCloseCreateModalFn}
+                >
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
+                        <DialogHeader>
+                            <DialogTitle>Cadastrar Novo Animal</DialogTitle>
+                        </DialogHeader>
+                        <AnimalForm
+                            mode="create"
+                            onCancel={handleCloseCreateModalFn}
+                            onCreateSuccess={handleCreateSuccess}
+                        />
+                    </DialogContent>
+                </Dialog>
+                {/* Edit Modal */}
+                {/* <Dialog open={isEditModalOpen} onOpenChange={handleCloseEditModalFn}>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
+                        <DialogHeader>
+                            <DialogTitle>Editar Adotante</DialogTitle>
+                        </DialogHeader>
+                        <AdopterForm
+                            mode="edit"
+                            adopter={selectedAdopter}
+                            onCancel={handleCloseEditModalFn}
+                            onUpdateSuccess={handleUpdateSuccess}
+                            onDeleteSuccess={handleDeleteSuccess}
+                        />
+                    </DialogContent>
+                </Dialog> */}
+                {/* View Modal */}
+                {/* <Dialog open={isViewModalOpen} onOpenChange={handleCloseViewModalFn}>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
+                        <DialogHeader>
+                            <DialogTitle>Detalhes do Adotante</DialogTitle>
+                        </DialogHeader>
+                        <AdopterForm
+                            mode="view"
+                            adopter={selectedAdopter}
+                            onCancel={handleCloseViewModalFn}
+                        />
+                    </DialogContent>
+                </Dialog> */}
             </div>
             <Alert
                 content={errorMessage}

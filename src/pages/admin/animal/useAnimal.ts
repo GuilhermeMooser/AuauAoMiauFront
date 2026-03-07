@@ -1,10 +1,10 @@
-import { GLOBAL_ERROR_HANDLERS } from "@/constants/errorHandlers";
+import {GLOBAL_ERROR_HANDLERS} from "@/constants/errorHandlers";
 import {useError} from "@/hooks/useError";
 import {useModal} from "@/hooks/useModal";
 import {useQueryCachePagination} from "@/hooks/useQueryCachePagination";
-import { useQueryError } from "@/hooks/useQueryError";
+import {useQueryError} from "@/hooks/useQueryError";
 import {getAnimalsPaginated} from "@/services/animal";
-import {AnimalFilterFormData, AnimalFilters} from "@/types/animal";
+import {Animal, AnimalFilterFormData, AnimalFilters} from "@/types/animal";
 import {PaginationUtils} from "@/utils/paginationUtils";
 import {useInfiniteQuery} from "@tanstack/react-query";
 import {useCallback, useState} from "react";
@@ -78,7 +78,7 @@ export const useAnimal = () => {
 
   /** Functions and logics */
 
-  //   const [selectedAdopter, setSelectedAdopter] = useState<Adopter | undefined>();
+  const [selectedAnimal, setSelectedAnimal] = useState<Animal | undefined>();
 
   //   const handleEditClick = (adopter: MinimalAdopter) => {
   //     setPendingAction("edit");
@@ -151,21 +151,21 @@ export const useAnimal = () => {
     staleTime: 30000,
   });
 
-    const animalsData = {
-      items: data?.pages.flatMap((page) => page.items) ?? [],
-      meta: data?.pages[data.pages.length - 1]?.meta,
-    };
+  const animalsData = {
+    items: data?.pages.flatMap((page) => page.items) ?? [],
+    meta: data?.pages[data.pages.length - 1]?.meta,
+  };
 
-    useQueryError({
-      error: errorAnimalsFetch,
-      setErrorMessage,
-      clearErrorMessage: clearError,
-      statusHandlers: [
-        ...GLOBAL_ERROR_HANDLERS,
-        {statusCode: 401, message: "Acesso não autorizado."},
-        {statusCode: 404, message: "Os animais não foram encontrados."},
-      ],
-    });
+  useQueryError({
+    error: errorAnimalsFetch,
+    setErrorMessage,
+    clearErrorMessage: clearError,
+    statusHandlers: [
+      ...GLOBAL_ERROR_HANDLERS,
+      {statusCode: 401, message: "Acesso não autorizado."},
+      {statusCode: 404, message: "Os animais não foram encontrados."},
+    ],
+  });
 
   //   /** Handlers */
   //   const {addItemOnScreen, updateItemOnScreen, removeItemFromScreen} =
@@ -218,7 +218,7 @@ export const useAnimal = () => {
     handleEditClick: () => {},
     handleViewClick: () => {},
     fetchNextPage,
-    // handleCreateSuccess,
+    handleCreateSuccess: () => {},
     // handleUpdateSuccess,
     // handleDeleteSuccess,
   };
