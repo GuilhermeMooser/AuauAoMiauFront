@@ -10,6 +10,7 @@ export const animalFiltersSchema = z.object({
 });
 
 export const animalSchema = z.object({
+  id: z.string().optional(),
   name: z.string().nonempty("Nome é obrigatório"),
   age: z.number({message: "A idade é obrigatória"}),
   breed: z.string().nonempty("Raça é obrigatória"),

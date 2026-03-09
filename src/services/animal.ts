@@ -30,6 +30,11 @@ export const getAnimalsPaginated = async (
   return response.data;
 };
 
+export const findAnimalById = async (id: string) => {
+  const response = await api.get<Animal>(`/animal/v1/${id}`);
+  return response;
+};
+
 export const getAnimalTypes = async () => {
   const response = await api.get<AnimalType[]>("/animal-type/v1");
   return response.data;

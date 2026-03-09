@@ -93,8 +93,8 @@ export type UpdateAnimalDto = Omit<
   "expenses" | "animalProcedures"
 > & {
   id: string;
-  expenses: UpdateExpenseDto[];
-  animalProcedures: UpdateAnimalProcedureDispatcherDto[];
+  expenses: (CreateExpenseDto | UpdateExpenseDto)[];
+  animalProcedures: (CreateAnimalProcedureDispatcherDto | UpdateAnimalProcedureDispatcherDto)[];
 };
 
 export const procedureConfig = {

@@ -3,10 +3,17 @@ import {useError} from "@/hooks/useError";
 import {useModal} from "@/hooks/useModal";
 import {useQueryCachePagination} from "@/hooks/useQueryCachePagination";
 import {useQueryError} from "@/hooks/useQueryError";
-import {getAnimalsPaginated} from "@/services/animal";
-import {Animal, AnimalFilterFormData, AnimalFilters} from "@/types/animal";
+import {findAnimalById, getAnimalsPaginated} from "@/services/animal";
+import {
+  Animal,
+  AnimalFilterFormData,
+  AnimalFilters,
+  MinimalAnimal,
+} from "@/types/animal";
+import {mutationErrorHandling} from "@/utils/errorHandling";
 import {PaginationUtils} from "@/utils/paginationUtils";
-import {useInfiniteQuery} from "@tanstack/react-query";
+import {useInfiniteQuery, useMutation} from "@tanstack/react-query";
+import {AxiosError} from "axios";
 import {useCallback, useState} from "react";
 
 type ModalAction = "edit" | "view";
@@ -20,7 +27,7 @@ export const useAnimal = () => {
 
   const handleCloseCreateModalFn = () => {
     handleCloseCreateModal();
-    // setSelectedAdopter(undefined);
+    setSelectedAnimal(undefined);
   };
 
   const {
@@ -39,13 +46,13 @@ export const useAnimal = () => {
   const handleCloseEditModalFn = () => {
     setPendingAction(null);
     handleCloseEditModal();
-    // setSelectedAdopter(undefined);
+    setSelectedAnimal(undefined);
   };
 
   const handleCloseViewModalFn = () => {
     setPendingAction(null);
     handleCloseViewModal();
-    // setSelectedAdopter(undefined);
+    setSelectedAnimal(undefined);
   };
 
   const {errorMessage, clearError, setErrorMessage} = useError();
@@ -80,46 +87,46 @@ export const useAnimal = () => {
 
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | undefined>();
 
-  //   const handleEditClick = (adopter: MinimalAdopter) => {
-  //     setPendingAction("edit");
-  //     getAdopterById(adopter.id);
-  //   };
+  const handleEditClick = (animal: MinimalAnimal) => {
+    setPendingAction("edit");
+    getAnimalById(animal.id);
+  };
 
-  //   const handleViewClick = (adopter: MinimalAdopter) => {
-  //     setPendingAction("view");
-  //     getAdopterById(adopter.id);
-  //   };
+  const handleViewClick = (animal: MinimalAnimal) => {
+    setPendingAction("view");
+    getAnimalById(animal.id);
+  };
 
-  //   const {mutate: getAdopterById} = useMutation({
-  //     mutationFn: async (id: string) => {
-  //       return (await findAdopterById(id)).data;
-  //     },
+  const {mutate: getAnimalById} = useMutation({
+    mutationFn: async (id: string) => {
+      return (await findAnimalById(id)).data;
+    },
 
-  //     onSuccess: (data) => {
-  //       setSelectedAdopter(data);
-  //       if (pendingAction === "edit") {
-  //         handleOpenEditModal();
-  //       } else if (pendingAction === "view") {
-  //         handleOpenViewModal();
-  //       }
-  //     },
-  //     onError: (error) => {
-  //       mutationErrorHandling(
-  //         error,
-  //         "Falha ao buscar adotante",
-  //         setErrorMessage,
-  //         () => {
-  //           if (
-  //             error instanceof AxiosError &&
-  //             error.response?.data.statusCode === 404
-  //           ) {
-  //             setErrorMessage("Adotante não encontrado");
-  //             return true;
-  //           }
-  //         },
-  //       );
-  //     },
-  //   });
+    onSuccess: (data) => {
+      setSelectedAnimal(data);
+      if (pendingAction === "edit") {
+        handleOpenEditModal();
+      } else if (pendingAction === "view") {
+        handleOpenViewModal();
+      }
+    },
+    onError: (error) => {
+      mutationErrorHandling(
+        error,
+        "Falha ao buscar animal",
+        setErrorMessage,
+        () => {
+          if (
+            error instanceof AxiosError &&
+            error.response?.data.statusCode === 404
+          ) {
+            setErrorMessage("Animal não encontrado");
+            return true;
+          }
+        },
+      );
+    },
+  });
 
   //   /** Pagination */
 
@@ -168,30 +175,30 @@ export const useAnimal = () => {
   });
 
   //   /** Handlers */
-  //   const {addItemOnScreen, updateItemOnScreen, removeItemFromScreen} =
-  //     useQueryCachePagination();
+  const {addItemOnScreen, updateItemOnScreen, removeItemFromScreen} =
+    useQueryCachePagination();
 
-  //   const handleCreateSuccess = useCallback(
-  //     (newAdopter: Adopter) => {
-  //       const queryKey = ["adopters", searchTerm, activeFilters];
-  //       addItemOnScreen<Adopter>(queryKey, newAdopter, false);
-  //     },
-  //     [searchTerm, activeFilters, addItemOnScreen],
-  //   );
+  const handleCreateSuccess = useCallback(
+    (newAnimal: Animal) => {
+      const queryKey = ["animals", searchTerm, activeFilters];
+      addItemOnScreen<Animal>(queryKey, newAnimal, false);
+    },
+    [searchTerm, activeFilters, addItemOnScreen],
+  );
 
-  //   const handleUpdateSuccess = useCallback(
-  //     (updatedAdopter: Adopter) => {
-  //       updateItemOnScreen<Adopter>(["adopters"], updatedAdopter);
-  //     },
-  //     [updateItemOnScreen],
-  //   );
+  const handleUpdateSuccess = useCallback(
+    (updatedAnimal: Animal) => {
+      updateItemOnScreen<Animal>(["animals"], updatedAnimal);
+    },
+    [updateItemOnScreen],
+  );
 
-  //   const handleDeleteSuccess = useCallback(
-  //     (deletedId: string) => {
-  //       removeItemFromScreen<Adopter>(["adopters"], deletedId);
-  //     },
-  //     [removeItemFromScreen],
-  //   );
+  const handleDeleteSuccess = useCallback(
+    (deletedId: string) => {
+      removeItemFromScreen<Animal>(["animalss"], deletedId);
+    },
+    [removeItemFromScreen],
+  );
 
   return {
     isCreateModalOpen,
@@ -210,16 +217,16 @@ export const useAnimal = () => {
     handleApplyFilter,
     handleClearFilter,
     animalsData,
-    // selectedAdopter,
+    selectedAnimal,
     isFetchingNextPage,
     hasNextPage,
     errorMessage,
     clearError,
-    handleEditClick: () => {},
-    handleViewClick: () => {},
+    handleEditClick,
+    handleViewClick,
     fetchNextPage,
-    handleCreateSuccess: () => {},
-    // handleUpdateSuccess,
-    // handleDeleteSuccess,
+    handleCreateSuccess,
+    handleUpdateSuccess,
+    handleDeleteSuccess,
   };
 };

@@ -53,13 +53,13 @@ export type UpdateAnimalProcedureDispatcherDto =
       payload: MiscellaneousPayloadUpdate;
     });
 
-type BaseProcedureUpdate = {
+export type BaseProcedureUpdate = {
   procedureType: AnimalProcedureEnum;
-  dtOfProcedure: Date;
+  dtOfProcedure?: Date;
   description: string;
-  veterinarian: string;
-  observation: string;
-  expenses: UpdateExpenseDto[];
+  veterinarian?: string;
+  observation?: string;
+  expenses?: (CreateExpenseDto | UpdateExpenseDto)[];
 };
 
 export type SurgeryPayloadUpdate = {

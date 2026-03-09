@@ -3,7 +3,7 @@ import z from "zod";
 import {minimalExpensesSchema} from "../Expenses/schemas";
 
 export const animalProceduresSchema = z.object({
-  // id: z.string().optional(),
+  id: z.string().optional(),
   description: z.string().nonempty("Descrição é obrigatória"),
   procedureType: z
     .nativeEnum(AnimalProcedureEnum)

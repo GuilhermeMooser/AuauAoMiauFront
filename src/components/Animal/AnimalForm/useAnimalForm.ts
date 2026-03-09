@@ -20,16 +20,24 @@ import {
   AnimalProcedureEnum,
   AnimalProcedures,
   BaseProcedure,
+  BaseProcedureUpdate,
   CreateAnimalProcedureDispatcherDto,
   MedicinePayload,
+  MedicinePayloadUpdate,
   MiscellaneousPayload,
+  MiscellaneousPayloadUpdate,
   SurgeryPayload,
+  SurgeryPayloadUpdate,
+  UpdateAnimalProcedureDispatcherDto,
   VaccinePayload,
+  VaccinePayloadUpdate,
 } from "@/types/animalProcedures";
 import {type} from "os";
 import {useState} from "react";
 import {toast} from "@/hooks/use-toast";
 import {mutationErrorHandling} from "@/utils/errorHandling";
+import {mapAnimalToFormData} from "@/utils/animalMapper";
+import {CreateExpenseDto, UpdateExpenseDto} from "@/types/expenses";
 
 type Props = {
   animal: AnimalFormProps["animal"];
@@ -51,26 +59,23 @@ export const useAnimalForm = ({
   const auth = getAuth();
 
   /** Form */
+  console.log(animal);
   const form = useForm<AnimalFormData>({
     resolver: zodResolver(animalSchema),
-    defaultValues: {
-      name: animal?.name ?? "",
-      age: animal?.age ?? undefined,
-      breed: animal?.breed ?? "",
-      color: animal?.color ?? "",
-      dtOfBirth: animal?.dtOfBirth ?? undefined,
-      dtOfDeath: animal?.dtOfDeath ?? undefined,
-      dtOfRescue: animal?.dtOfRescue ?? undefined,
-      dtOfAdoption: animal?.dtOfAdoption ?? undefined,
-      locationOfRescue: animal?.locationOfRescue ?? "",
-      typeId: animal?.type.id ?? 0,
-      size: animal?.size ?? "",
-      gender: animal?.gender ?? "",
-      additionalInfo: animal?.additionalInfo ?? "",
-      castrated: animal?.castrated ?? false,
-      animalProcedures: animal?.animalProcedures ?? [],
-      expenses: animal?.expenses ?? [],
-    },
+    defaultValues: animal
+      ? mapAnimalToFormData(animal)
+      : {
+          name: "",
+          age: undefined,
+          breed: "",
+          color: "",
+          typeId: 0,
+          size: "",
+          gender: "",
+          castrated: false,
+          animalProcedures: [],
+          expenses: [],
+        },
   });
   const {onError} = useFormError<AnimalFormData>();
   const {clearError, errorMessage, setErrorMessage} = useError();
@@ -207,30 +212,122 @@ export const useAnimalForm = ({
   JSON.stringify(form.formState.errors, null, 2);
   const handleButtonConfirm = (data: AnimalFormData) => {
     setSubmitting(true);
+    console.log(JSON.stringify(data, null, 3));
 
     if (mode === "create") {
       const dto: CreateAnimalDto = {
         ...data,
-        animalProcedures: mapProceduresToDto(data.animalProcedures),
+        animalProcedures: mapProceduresToCreateDto(data.animalProcedures),
       };
-      // console.log(JSON.stringify(dto, null, 3));
-
       createAnimalMutation(dto);
+    } else if (mode === "edit") {
+      if (!animal?.id) {
+        setErrorMessage("O código do animal não pode ser nulo");
+        return;
+      }
+      const dto: UpdateAnimalDto = {
+        ...data,
+        id: animal.id,
+        expenses: mapExpensesToCreateOrUpdateDto(data.expenses),
+        animalProcedures: mapProceduresToUpdateDto(data.animalProcedures),
+      };
+
+      updateAnimalMutation(dto);
     }
-    // console.log(JSON.stringify(data, null, 3));
-    // else if (mode === "edit") {
-    //   if (!animal?.id) {
-    //     setErrorMessage("O código do animal não pode ser nulo");
-    //     return;
-    //   }
-    //   updateAnimalMutation({
-    //     id: animal.id,
-    //     ...data,
-    //   });
-    // }
   };
 
-  const mapProceduresToDto = (
+  const mapExpensesToCreateOrUpdateDto = (
+    expenses: AnimalFormData["expenses"],
+  ): (CreateExpenseDto | UpdateExpenseDto)[] => {
+    if (!expenses) return [];
+    return expenses.map((e) =>
+      e.id
+        ? {
+            id: e.id,
+            value: e.value,
+            description: e.description,
+            paymentType: e.paymentType,
+          }
+        : {
+            value: e.value,
+            description: e.description,
+            paymentType: e.paymentType,
+          },
+    );
+  };
+
+  const mapProceduresToUpdateDto = (
+    procedures: AnimalFormData["animalProcedures"],
+  ): (CreateAnimalProcedureDispatcherDto | UpdateAnimalProcedureDispatcherDto)[] => {
+    if (!procedures) return [];
+
+    return procedures.map((proc) => {
+      const base: BaseProcedureUpdate = {
+        procedureType: proc.procedureType,
+        dtOfProcedure: proc.dtOfProcedure,
+        description: proc.description,
+        veterinarian: proc.veterinarian,
+        observation: proc.observation,
+        expenses: mapExpensesToCreateOrUpdateDto(proc.expenses),
+      };
+
+      switch (proc.procedureType) {
+        case AnimalProcedureEnum.VACCINE:
+          return {
+            ...base,
+            procedureType: AnimalProcedureEnum.VACCINE,
+            payload: {
+              id: proc.id,
+              vaccineName: proc.vaccineName ?? "",
+              vaccineType: proc.vaccineType,
+              batch: proc.batch,
+              manufacturer: proc.manufacturer,
+              dtOfExpiration: proc.dtOfExpiration,
+            } satisfies VaccinePayloadUpdate,
+          };
+
+        case AnimalProcedureEnum.MEDICINE:
+          return {
+            ...base,
+            procedureType: AnimalProcedureEnum.MEDICINE,
+            payload: {
+              medicineName: proc.medicineName ?? "",
+              reason: proc.reason,
+              dosage: proc.dosage,
+              frequency: proc.frequency,
+              dtOfStart: proc.dtOfStart,
+              dtOfEnd: proc.dtOfEnd,
+            } satisfies MedicinePayloadUpdate,
+          };
+
+        case AnimalProcedureEnum.SURGERY:
+          return {
+            ...base,
+            procedureType: AnimalProcedureEnum.SURGERY,
+            payload: {
+              surgeryName: proc.surgeryName ?? "",
+              surgeryType: proc.surgeryType,
+              local: proc.local,
+              reason: proc.reason,
+              dtOfDuration: proc.dtOfDuration,
+              recomendations: proc.recomendations,
+            } satisfies SurgeryPayloadUpdate,
+          };
+
+        case AnimalProcedureEnum.MISCELLANEOUS:
+          return {
+            ...base,
+            procedureType: AnimalProcedureEnum.MISCELLANEOUS,
+            payload: {
+              reason: proc.reason ?? "",
+              recomendations: proc.recomendations,
+            } satisfies MiscellaneousPayloadUpdate,
+          };
+      }
+    });
+  };
+
+  const mapProceduresToCreateDto = (
     procedures: AnimalFormData["animalProcedures"],
   ): CreateAnimalProcedureDispatcherDto[] => {
     if (!procedures) return [];

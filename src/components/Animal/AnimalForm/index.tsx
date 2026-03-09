@@ -15,20 +15,13 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import {
-    Bell,
-    BellOff,
     CalendarDays,
     Coins,
-    Link,
     Loader2,
-    MapPin,
     PawPrint,
-    Phone,
     Plus,
-    Scissors,
     Stethoscope,
     Trash2,
-    User,
 } from "lucide-react";
 import {
     Select,
@@ -42,11 +35,9 @@ import { Button } from "@/components/ui/button";
 import Alert from "@/components/Alert";
 import Icon from "@/components/Icon";
 import ConfirmModal from "@/components/ConfirmModal";
-import { Label } from "@/components/ui/label";
 
 import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-picker";
-import { MaskedInput } from "@/components/ui/masked-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Animal, procedureConfig, ProcedureType } from "@/types/animal";
 import { Textarea } from "@/components/ui/textarea";

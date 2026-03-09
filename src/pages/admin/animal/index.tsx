@@ -24,7 +24,7 @@ export default function Animal() {
         showFilters,
         activeFilters,
         animalsData,
-        // selectedAdopter,
+        selectedAnimal,
         errorMessage,
         isEditModalOpen,
         clearError,
@@ -43,8 +43,8 @@ export default function Animal() {
         hasNextPage,
         fetchNextPage,
         handleCreateSuccess,
-        // handleUpdateSuccess,
-        // handleDeleteSuccess,
+        handleUpdateSuccess,
+        handleDeleteSuccess,
     } = useAnimal();
 
     return (
@@ -131,33 +131,33 @@ export default function Animal() {
                     </DialogContent>
                 </Dialog>
                 {/* Edit Modal */}
-                {/* <Dialog open={isEditModalOpen} onOpenChange={handleCloseEditModalFn}>
+                <Dialog open={isEditModalOpen} onOpenChange={handleCloseEditModalFn}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
                         <DialogHeader>
                             <DialogTitle>Editar Adotante</DialogTitle>
                         </DialogHeader>
-                        <AdopterForm
+                        <AnimalForm
                             mode="edit"
-                            adopter={selectedAdopter}
+                            animal={selectedAnimal}
                             onCancel={handleCloseEditModalFn}
                             onUpdateSuccess={handleUpdateSuccess}
                             onDeleteSuccess={handleDeleteSuccess}
                         />
                     </DialogContent>
-                </Dialog> */}
+                </Dialog>
                 {/* View Modal */}
-                {/* <Dialog open={isViewModalOpen} onOpenChange={handleCloseViewModalFn}>
+                <Dialog open={isViewModalOpen} onOpenChange={handleCloseViewModalFn}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
                         <DialogHeader>
                             <DialogTitle>Detalhes do Adotante</DialogTitle>
                         </DialogHeader>
-                        <AdopterForm
+                        <AnimalForm
                             mode="view"
-                            adopter={selectedAdopter}
+                            animal={selectedAnimal}
                             onCancel={handleCloseViewModalFn}
                         />
                     </DialogContent>
-                </Dialog> */}
+                </Dialog>
             </div>
             <Alert
                 content={errorMessage}
