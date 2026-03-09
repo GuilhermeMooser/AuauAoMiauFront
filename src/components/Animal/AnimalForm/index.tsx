@@ -84,12 +84,18 @@ export default function AnimalForm({
         animalProceduresFields,
         appendAnimalProcedures,
         removeAnimalProcedures,
-        animalProceduresExpensesFields,
-        animalProceduresAppendExpense,
-        animalProceduresRemoveExpense,
         handleAddAnimalProcedureExpense,
         handleRemoveAnimalProcedureExpense,
-        getProceduresByType
+        getProceduresByType,
+        handleCloseModal,
+        submitting,
+        handleButtonConfirm,
+        onError,
+        errorMessage,
+        clearError,
+        isModalDeleteAnimalOpen,
+        handleCloseDeleteAnimalModal,
+        handleDeleteAnimalConfirm
     } = useAnimalForm(
         {
             mode,
@@ -129,7 +135,7 @@ export default function AnimalForm({
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nome do Animal</FormLabel>
+                                        <FormLabel>*Nome do Animal</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -149,7 +155,7 @@ export default function AnimalForm({
                                 name="typeId"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Tipo</FormLabel>
+                                        <FormLabel>*Tipo</FormLabel>
                                         <Select
                                             onValueChange={(val) => field.onChange(Number(val))}
                                             value={field.value > 0 ? field.value.toString() : undefined}
@@ -177,7 +183,7 @@ export default function AnimalForm({
                                 name="breed"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Raça</FormLabel>
+                                        <FormLabel>*Raça</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -197,7 +203,7 @@ export default function AnimalForm({
                                 name="size"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Porte</FormLabel>
+                                        <FormLabel>*Porte</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
@@ -223,7 +229,7 @@ export default function AnimalForm({
                                 name="gender"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Sexo</FormLabel>
+                                        <FormLabel>*Sexo</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
@@ -248,7 +254,7 @@ export default function AnimalForm({
                                 name="color"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Cor / Pelagem</FormLabel>
+                                        <FormLabel>*Cor / Pelagem</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -268,14 +274,19 @@ export default function AnimalForm({
                                 name="age"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Idade (anos)</FormLabel>
+                                        <FormLabel>*Idade (anos)</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
                                                 value={field.value ?? ""}
                                                 onChange={(e) => {
-                                                    const value = e.target.value.replace(/\D/g, "");
-                                                    field.onChange(value === "" ? undefined : Number(value));
+                                                    const value = e.target.value.replace(
+                                                        /\D/g,
+                                                        ""
+                                                    );
+                                                    field.onChange(
+                                                        value === "" ? undefined : Number(value)
+                                                    );
                                                 }}
                                                 disabled={isReadOnly}
                                                 inputMode="numeric"
@@ -483,7 +494,7 @@ export default function AnimalForm({
                                                 name={`expenses.${index}.description`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Descrição</FormLabel>
+                                                        <FormLabel>*Descrição</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
@@ -503,7 +514,7 @@ export default function AnimalForm({
                                                 name={`expenses.${index}.value`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Valor (R$)</FormLabel>
+                                                        <FormLabel>*Valor (R$)</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
@@ -562,9 +573,7 @@ export default function AnimalForm({
                                 variant="outline"
                                 onClick={() =>
                                     appendExpense({
-                                        id: "",
                                         description: "",
-                                        expenseType: "",
                                         value: 0,
                                         paymentType: "",
                                     })
@@ -670,7 +679,7 @@ export default function AnimalForm({
                                                                     name={`animalProcedures.${originalIndex}.description`}
                                                                     render={({ field }) => (
                                                                         <FormItem>
-                                                                            <FormLabel>Descrição</FormLabel>
+                                                                            <FormLabel>*Descrição</FormLabel>
                                                                             <FormControl>
                                                                                 <Input
                                                                                     {...field}
@@ -709,7 +718,7 @@ export default function AnimalForm({
                                                                             name={`animalProcedures.${originalIndex}.vaccineName`}
                                                                             render={({ field }) => (
                                                                                 <FormItem>
-                                                                                    <FormLabel>Nome da Vacina</FormLabel>
+                                                                                    <FormLabel>*Nome da Vacina</FormLabel>
                                                                                     <FormControl>
                                                                                         <Input
                                                                                             {...field}
@@ -824,7 +833,7 @@ export default function AnimalForm({
                                                                             name={`animalProcedures.${originalIndex}.medicineName`}
                                                                             render={({ field }) => (
                                                                                 <FormItem>
-                                                                                    <FormLabel>Nome do Medicamento</FormLabel>
+                                                                                    <FormLabel>*Nome do Medicamento</FormLabel>
                                                                                     <FormControl>
                                                                                         <Input
                                                                                             {...field}
@@ -841,7 +850,7 @@ export default function AnimalForm({
                                                                             name={`animalProcedures.${originalIndex}.reason`}
                                                                             render={({ field }) => (
                                                                                 <FormItem>
-                                                                                    <FormLabel>Motivo</FormLabel>
+                                                                                    <FormLabel>*Motivo</FormLabel>
                                                                                     <FormControl>
                                                                                         <Input
                                                                                             {...field}
@@ -896,7 +905,7 @@ export default function AnimalForm({
                                                                             name={`animalProcedures.${originalIndex}.dtOfStart`}
                                                                             render={({ field }) => (
                                                                                 <FormItem className="flex flex-col">
-                                                                                    <FormLabel>Data de Início</FormLabel>
+                                                                                    <FormLabel>*Data de Início</FormLabel>
                                                                                     <FormControl className="bg-[#020817]">
                                                                                         <DatePicker
                                                                                             disabled={isReadOnly}
@@ -928,7 +937,7 @@ export default function AnimalForm({
                                                                             )}
                                                                         />
                                                                     </div>
-                                                                    <FormField
+                                                                    {/* <FormField
                                                                         control={form.control}
                                                                         name={`animalProcedures.${originalIndex}.recomendations`}
                                                                         render={({ field }) => (
@@ -945,7 +954,7 @@ export default function AnimalForm({
                                                                                 <FormMessage />
                                                                             </FormItem>
                                                                         )}
-                                                                    />
+                                                                    /> */}
                                                                 </>
                                                             )}
 
@@ -957,7 +966,7 @@ export default function AnimalForm({
                                                                             name={`animalProcedures.${originalIndex}.surgeryName`}
                                                                             render={({ field }) => (
                                                                                 <FormItem>
-                                                                                    <FormLabel>Nome da Cirurgia</FormLabel>
+                                                                                    <FormLabel>*Nome da Cirurgia</FormLabel>
                                                                                     <FormControl>
                                                                                         <Input
                                                                                             {...field}
@@ -1099,14 +1108,12 @@ export default function AnimalForm({
                                                                             variant="outline"
                                                                             size="sm"
                                                                             onClick={() =>
-                                                                                // handleAddAnimalProcedureExpense(originalIndex, {
-                                                                                //     id: "",
-                                                                                //     description: "",
-                                                                                //     expenseType: "",
-                                                                                //     value: 0,
-                                                                                //     paymentType: "",
-                                                                                // })
-                                                                                handleAddAnimalProcedureExpense()
+                                                                                handleAddAnimalProcedureExpense(originalIndex, {
+                                                                                    id: "",
+                                                                                    description: "",
+                                                                                    value: 0,
+                                                                                    paymentType: "",
+                                                                                })
                                                                             }
                                                                         >
                                                                             <Plus className="mr-2 h-3 w-3" />
@@ -1136,8 +1143,7 @@ export default function AnimalForm({
                                                                                                 variant="ghost"
                                                                                                 size="sm"
                                                                                                 onClick={() =>
-                                                                                                    // handleRemoveAnimalProcedureExpense(originalIndex, expIdx)
-                                                                                                    handleRemoveAnimalProcedureExpense()
+                                                                                                    handleRemoveAnimalProcedureExpense(originalIndex, expIdx)
                                                                                                 }
                                                                                             >
                                                                                                 <Trash2 className="h-4 w-4" />
@@ -1146,7 +1152,7 @@ export default function AnimalForm({
                                                                                     </div>
 
                                                                                     <div className="space-y-3">
-                                                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                                                        <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
                                                                                             <FormField
                                                                                                 control={form.control}
                                                                                                 name={`animalProcedures.${originalIndex}.expenses.${expIdx}.description`}
@@ -1160,35 +1166,6 @@ export default function AnimalForm({
                                                                                                                 placeholder="Ex: Compra do medicamento"
                                                                                                             />
                                                                                                         </FormControl>
-                                                                                                        <FormMessage />
-                                                                                                    </FormItem>
-                                                                                                )}
-                                                                                            />
-                                                                                            <FormField
-                                                                                                control={form.control}
-                                                                                                name={`animalProcedures.${originalIndex}.expenses.${expIdx}.expenseType`}
-                                                                                                render={({ field }) => (
-                                                                                                    <FormItem>
-                                                                                                        <FormLabel>Tipo de Gasto</FormLabel>
-                                                                                                        <Select
-                                                                                                            onValueChange={field.onChange}
-                                                                                                            defaultValue={field.value}
-                                                                                                            disabled={isReadOnly}
-                                                                                                        >
-                                                                                                            <FormControl>
-                                                                                                                <SelectTrigger>
-                                                                                                                    <SelectValue placeholder="Selecione o tipo" />
-                                                                                                                </SelectTrigger>
-                                                                                                            </FormControl>
-                                                                                                            <SelectContent>
-                                                                                                                <SelectItem value="consulta">Consulta</SelectItem>
-                                                                                                                <SelectItem value="vacina">Vacina</SelectItem>
-                                                                                                                <SelectItem value="medicamento">Medicamento</SelectItem>
-                                                                                                                <SelectItem value="cirurgia">Cirurgia</SelectItem>
-                                                                                                                <SelectItem value="exame">Exame</SelectItem>
-                                                                                                                <SelectItem value="outros">Outros</SelectItem>
-                                                                                                            </SelectContent>
-                                                                                                        </Select>
                                                                                                         <FormMessage />
                                                                                                     </FormItem>
                                                                                                 )}
@@ -1269,12 +1246,12 @@ export default function AnimalForm({
                 </Card>
 
                 {/* ── Actions ─────────────────────────────────────────────── */}
-                {/* <div className="flex justify-end space-x-4">
+                <div className="flex justify-end space-x-4">
                     <Button type="button" variant="outline" onClick={handleCloseModal}>
                         {isReadOnly ? "Fechar" : "Cancelar"}
                     </Button>
                     {!isReadOnly && (
-                        <Button onClick={form.handleSubmit(handleButtonConfirm, onError)}>
+                        <Button onClick={form.handleSubmit(handleButtonConfirm, (errors) => console.log("Erros Zod:", errors))}>
                             {submitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -1285,22 +1262,22 @@ export default function AnimalForm({
                             )}
                         </Button>
                     )}
-                </div> */}
+                </div>
             </Form>
 
-            {/* <Alert
+            <Alert
                 content={errorMessage}
                 isOpen={!!errorMessage}
                 onClose={clearError}
             />
 
             <ConfirmModal
-                isOpen={isModalDeleteAdopterOpen}
-                onClose={handleCloseDeleteAdopterModal}
-                onNotConfirm={handleCloseDeleteAdopterModal}
-                onConfirm={handleDeleteAdopterConfirm}
-                content={"Deseja excluir este adotante ?"}
-            /> */}
+                isOpen={isModalDeleteAnimalOpen}
+                onClose={handleCloseDeleteAnimalModal}
+                onNotConfirm={handleCloseDeleteAnimalModal}
+                onConfirm={handleDeleteAnimalConfirm}
+                content={"Deseja excluir este animal ?"}
+            />
         </>
     )
 }

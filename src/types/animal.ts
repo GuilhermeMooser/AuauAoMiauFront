@@ -3,14 +3,20 @@ import z from "zod";
 import {Pagination} from "./pagination";
 import {Audit} from "./audit";
 import {AnimalType} from "./animalType";
-import {MinimalExpenses} from "./expenses";
-import {AnimalProcedureEnum, AnimalProcedures} from "./animalProcedures";
+import {CreateExpenseDto, MinimalExpenses, UpdateExpenseDto} from "./expenses";
+import {
+  AnimalProcedureEnum,
+  AnimalProcedures,
+  CreateAnimalProcedureDispatcherDto,
+  UpdateAnimalProcedureDispatcherDto,
+} from "./animalProcedures";
 import {MinimalAdopter} from "./adopter";
 
 export enum AnimalGender {
   Male = "M",
   Female = "F",
 }
+export type AnimalSize = "pequeno" | "medio" | "grande";
 
 export type Animal = {
   id: string;
@@ -59,9 +65,37 @@ export type MinimalAnimal = {
 export type FindAllAnimalsPaginated = Pagination<MinimalAnimal>;
 
 export type AnimalFormData = z.infer<typeof animalSchema>;
-// PEDIR PRA IA FZER OS FORM
 
 export type AnimalFilterFormData = z.infer<typeof animalFiltersSchema>;
+
+export type CreateAnimalDto = {
+  name: string;
+  age: number;
+  breed: string;
+  color: string;
+  dtOfBirth?: Date;
+  dtOfDeath?: Date;
+  dtOfRescue?: Date;
+  dtOfAdoption?: Date;
+  locationOfRescue?: string;
+  adopterId?: string;
+  typeId: number;
+  size: string;
+  gender: string;
+  additionalInfo?: string;
+  castrated: boolean;
+  expenses?: CreateExpenseDto[];
+  animalProcedures?: CreateAnimalProcedureDispatcherDto[];
+};
+
+export type UpdateAnimalDto = Omit<
+  CreateAnimalDto,
+  "expenses" | "animalProcedures"
+> & {
+  id: string;
+  expenses: UpdateExpenseDto[];
+  animalProcedures: UpdateAnimalProcedureDispatcherDto[];
+};
 
 export const procedureConfig = {
   VACCINE: {

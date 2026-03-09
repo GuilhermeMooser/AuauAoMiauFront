@@ -10,11 +10,10 @@ export const animalFiltersSchema = z.object({
 });
 
 export const animalSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  age: z.number(),
-  breed: z.string(),
-  color: z.string(),
+  name: z.string().nonempty("Nome é obrigatório"),
+  age: z.number({message: "A idade é obrigatória"}),
+  breed: z.string().nonempty("Raça é obrigatória"),
+  color: z.string().nonempty("Pelagem/Cor é obrigatória"),
 
   dtOfBirth: z.date().optional(),
   dtOfDeath: z.date().optional(),
@@ -23,13 +22,13 @@ export const animalSchema = z.object({
 
   locationOfRescue: z.string().optional(),
 
-  typeId: z.number(),
+  typeId: z.number({message: "A tipo é obrigatório"}).min(1, "O tipo é obrigatório"),
 
-  size: z.string(),
-  gender: z.string(),
+  size: z.string().nonempty("Tamanho é obrigatório"),
+  gender: z.string().nonempty("Sexo é obrigatório"),
 
   additionalInfo: z.string().optional(),
-  castrated: z.boolean().optional(),
+  castrated: z.boolean(),
 
   animalProcedures: z.array(animalProceduresSchema).optional(),
   expenses: z.array(minimalExpensesSchema).optional(),
