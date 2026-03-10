@@ -95,21 +95,28 @@ export default function AnimalCard({
                     </div>
                     <div className="space-y-2 flex-shrink-0">
                         <div className="flex flex-col items-center space-x-2 text-sm">
-                            <div className="flex items-center space-x-1">
-                                <Box className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <span className="text-muted-foreground truncate">Data de resgate:</span>
-                                <span className="text-foreground truncate">{formatDate(animal?.dtOfRescue)}</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                                <Box className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <span className="text-muted-foreground truncate">Data de adoção:</span>
-                                <span className="text-foreground truncate">{formatDate(animal?.dtOfAdoption)}</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                                <Box className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <span className="text-muted-foreground truncate">Data da morte:</span>
-                                <span className="text-foreground truncate">{formatDate(animal?.dtOfDeath)}</span>
-                            </div>
+                            {animal?.dtOfRescue && (
+                                <div className="flex items-center space-x-1">
+                                    <Box className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                    <span className="text-muted-foreground truncate">Data de resgate:</span>
+                                    <span className="text-foreground truncate">{formatDate(animal?.dtOfRescue)}</span>
+                                </div>
+
+                            )}
+                            {animal?.dtOfAdoption && (
+                                <div className="flex items-center space-x-1">
+                                    <Box className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                    <span className="text-muted-foreground truncate">Data de adoção:</span>
+                                    <span className="text-foreground truncate">{formatDate(animal?.dtOfAdoption)}</span>
+                                </div>
+                            )}
+                            {animal?.dtOfDeath && (
+                                <div className="flex items-center space-x-1">
+                                    <Box className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                    <span className="text-muted-foreground truncate">Data da morte:</span>
+                                    <span className="text-foreground truncate">{formatDate(animal?.dtOfDeath)}</span>
+                                </div>
+                            )}
                         </div>
                     </div>
                     {/* Actions - sempre no final */}

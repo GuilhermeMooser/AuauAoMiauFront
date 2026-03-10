@@ -291,7 +291,6 @@ export const useAdopterForm = ({
     },
     onError: (error) => {
       setSubmitting(false);
-      console.log(error);
       mutationErrorHandling(
         error,
         "Falha ao criar o adotante",
@@ -379,7 +378,6 @@ export const useAdopterForm = ({
       handleCloseModal();
     },
     onError: (error) => {
-      console.log(error);
       mutationErrorHandling(
         error,
         "Falha ao excluir o adotante",

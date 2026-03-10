@@ -175,7 +175,6 @@ export const useAnimalForm = ({
     },
     onError: (error) => {
       setSubmitting(false);
-      console.log(error);
       mutationErrorHandling(error, "Falha ao criar o animal", setErrorMessage);
     },
   });
@@ -198,7 +197,6 @@ export const useAnimalForm = ({
     },
     onError: (error) => {
       setSubmitting(false);
-      console.log(error)
       mutationErrorHandling(
         error,
         "Falha ao atualizar o adotante",
@@ -212,7 +210,6 @@ export const useAnimalForm = ({
   JSON.stringify(form.formState.errors, null, 2);
   const handleButtonConfirm = (data: AnimalFormData) => {
     setSubmitting(true);
-    // console.log(JSON.stringify(data, null, 3));
 
     if (mode === "create") {
       const dto: CreateAnimalDto = {
@@ -221,7 +218,6 @@ export const useAnimalForm = ({
         animalProcedures: mapProceduresToCreateUpdateDto(data.animalProcedures),
       };
 
-      console.log(JSON.stringify(dto, null, 3));
       createAnimalMutation(dto);
     } else if (mode === "edit") {
       if (!animal?.id) {
@@ -235,7 +231,6 @@ export const useAnimalForm = ({
         animalProcedures: mapProceduresToCreateUpdateDto(data.animalProcedures),
       };
 
-      console.log(JSON.stringify(dto, null, 3));
       updateAnimalMutation(dto);
     }
   };
@@ -516,7 +511,6 @@ export const useAnimalForm = ({
       handleCloseModal();
     },
     onError: (error) => {
-      console.log(error);
       mutationErrorHandling(
         error,
         "Falha ao excluir o animal",
