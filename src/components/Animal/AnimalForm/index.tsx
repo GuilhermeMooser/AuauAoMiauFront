@@ -583,7 +583,7 @@ export default function AnimalForm({
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Stethoscope className="h-5 w-5" />
-                            Procedimentos Médicos
+                            Procedimentos
                         </CardTitle>
                         <CardDescription>
                             Registre vacinas, medicamentos, cirurgias e outros procedimentos

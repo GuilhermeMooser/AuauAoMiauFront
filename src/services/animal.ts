@@ -52,9 +52,9 @@ export const createAnimal = async (createAnimalDto: CreateAnimalDto) => {
 export const updateAnimal = async (updateAnimalDto: UpdateAnimalDto) => {
   const body = {
     ...updateAnimalDto,
-  };
+  };;
 
-  const response = await api.put<Animal>("/adopter/v1", body);
+  const response = await api.put<Animal>("/animal/v1", body);
   return response;
 };
 

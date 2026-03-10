@@ -59,7 +59,6 @@ export const useAnimalForm = ({
   const auth = getAuth();
 
   /** Form */
-  console.log(animal);
   const form = useForm<AnimalFormData>({
     resolver: zodResolver(animalSchema),
     defaultValues: animal
@@ -183,7 +182,7 @@ export const useAnimalForm = ({
 
   const {mutate: updateAnimalMutation} = useMutation({
     mutationFn: async (updateAnimalDto: UpdateAnimalDto) => {
-      return (await updateAnimal({...updateAnimalDto})).data;
+      return (await updateAnimal(updateAnimalDto)).data;
     },
     onSuccess: (data) => {
       setSubmitting(false);
@@ -199,6 +198,7 @@ export const useAnimalForm = ({
     },
     onError: (error) => {
       setSubmitting(false);
+      console.log(error)
       mutationErrorHandling(
         error,
         "Falha ao atualizar o adotante",
@@ -212,13 +212,16 @@ export const useAnimalForm = ({
   JSON.stringify(form.formState.errors, null, 2);
   const handleButtonConfirm = (data: AnimalFormData) => {
     setSubmitting(true);
-    console.log(JSON.stringify(data, null, 3));
+    // console.log(JSON.stringify(data, null, 3));
 
     if (mode === "create") {
       const dto: CreateAnimalDto = {
         ...data,
-        animalProcedures: mapProceduresToCreateDto(data.animalProcedures),
+        expenses: mapExpensesToCreateOrUpdateDto(data.expenses),
+        animalProcedures: mapProceduresToCreateUpdateDto(data.animalProcedures),
       };
+
+      console.log(JSON.stringify(dto, null, 3));
       createAnimalMutation(dto);
     } else if (mode === "edit") {
       if (!animal?.id) {
@@ -229,9 +232,10 @@ export const useAnimalForm = ({
         ...data,
         id: animal.id,
         expenses: mapExpensesToCreateOrUpdateDto(data.expenses),
-        animalProcedures: mapProceduresToUpdateDto(data.animalProcedures),
+        animalProcedures: mapProceduresToCreateUpdateDto(data.animalProcedures),
       };
 
+      console.log(JSON.stringify(dto, null, 3));
       updateAnimalMutation(dto);
     }
   };
@@ -256,96 +260,104 @@ export const useAnimalForm = ({
     );
   };
 
-  const mapProceduresToUpdateDto = (
+  const mapProceduresToCreateUpdateDto = (
     procedures: AnimalFormData["animalProcedures"],
-  ): (CreateAnimalProcedureDispatcherDto | UpdateAnimalProcedureDispatcherDto)[] => {
+  ): (
+    | CreateAnimalProcedureDispatcherDto
+    | UpdateAnimalProcedureDispatcherDto
+  )[] => {
     if (!procedures) return [];
 
     return procedures.map((proc) => {
-      const base: BaseProcedureUpdate = {
-        procedureType: proc.procedureType,
-        dtOfProcedure: proc.dtOfProcedure,
-        description: proc.description,
-        veterinarian: proc.veterinarian,
-        observation: proc.observation,
-        expenses: mapExpensesToCreateOrUpdateDto(proc.expenses),
-      };
+      if (proc.id) {
+        const base: BaseProcedureUpdate = {
+          procedureType: proc.procedureType,
+          dtOfProcedure: proc.dtOfProcedure,
+          description: proc.description,
+          veterinarian: proc.veterinarian,
+          observation: proc.observation,
+          expenses: mapExpensesToCreateOrUpdateDto(proc.expenses),
+        };
 
-      switch (proc.procedureType) {
-        case AnimalProcedureEnum.VACCINE:
-          return {
-            ...base,
-            procedureType: AnimalProcedureEnum.VACCINE,
-            payload: {
-              id: proc.id,
-              vaccineName: proc.vaccineName ?? "",
-              vaccineType: proc.vaccineType,
-              batch: proc.batch,
-              manufacturer: proc.manufacturer,
-              dtOfExpiration: proc.dtOfExpiration,
-            } satisfies VaccinePayloadUpdate,
-          };
+        switch (proc.procedureType) {
+          case AnimalProcedureEnum.VACCINE:
+            return {
+              ...base,
+              procedureType: AnimalProcedureEnum.VACCINE,
+              payload: {
+                id: proc.id,
+                vaccineName: proc.vaccineName ?? "",
+                vaccineType: proc.vaccineType,
+                batch: proc.batch,
+                manufacturer: proc.manufacturer,
+                dtOfExpiration: proc.dtOfExpiration,
+              } satisfies VaccinePayloadUpdate,
+            };
 
-        case AnimalProcedureEnum.MEDICINE:
-          return {
-            ...base,
-            procedureType: AnimalProcedureEnum.MEDICINE,
-            payload: {
-              medicineName: proc.medicineName ?? "",
-              reason: proc.reason,
-              dosage: proc.dosage,
-              frequency: proc.frequency,
-              dtOfStart: proc.dtOfStart,
-              dtOfEnd: proc.dtOfEnd,
-            } satisfies MedicinePayloadUpdate,
-          };
+          case AnimalProcedureEnum.MEDICINE:
+            return {
+              ...base,
+              procedureType: AnimalProcedureEnum.MEDICINE,
+              payload: {
+                id: proc.id,
+                medicineName: proc.medicineName ?? "",
+                reason: proc.reason,
+                dosage: proc.dosage,
+                frequency: proc.frequency,
+                dtOfStart: proc.dtOfStart,
+                dtOfEnd: proc.dtOfEnd,
+              } satisfies MedicinePayloadUpdate,
+            };
 
-        case AnimalProcedureEnum.SURGERY:
-          return {
-            ...base,
-            procedureType: AnimalProcedureEnum.SURGERY,
-            payload: {
-              surgeryName: proc.surgeryName ?? "",
-              surgeryType: proc.surgeryType,
-              local: proc.local,
-              reason: proc.reason,
-              dtOfDuration: proc.dtOfDuration,
-              recomendations: proc.recomendations,
-            } satisfies SurgeryPayloadUpdate,
-          };
+          case AnimalProcedureEnum.SURGERY:
+            return {
+              ...base,
+              procedureType: AnimalProcedureEnum.SURGERY,
+              payload: {
+                id: proc.id,
+                surgeryName: proc.surgeryName ?? "",
+                surgeryType: proc.surgeryType,
+                local: proc.local,
+                reason: proc.reason,
+                dtOfDuration: proc.dtOfDuration,
+                recomendations: proc.recomendations,
+              } satisfies SurgeryPayloadUpdate,
+            };
 
-        case AnimalProcedureEnum.MISCELLANEOUS:
-          return {
-            ...base,
-            procedureType: AnimalProcedureEnum.MISCELLANEOUS,
-            payload: {
-              reason: proc.reason ?? "",
-              recomendations: proc.recomendations,
-            } satisfies MiscellaneousPayloadUpdate,
-          };
+          case AnimalProcedureEnum.MISCELLANEOUS:
+            return {
+              ...base,
+              procedureType: AnimalProcedureEnum.MISCELLANEOUS,
+              payload: {
+                id: proc.id,
+                reason: proc.reason ?? "",
+                recomendations: proc.recomendations,
+              } satisfies MiscellaneousPayloadUpdate,
+            };
+        }
       }
-    });
-  };
 
-  const mapProceduresToCreateDto = (
-    procedures: AnimalFormData["animalProcedures"],
-  ): CreateAnimalProcedureDispatcherDto[] => {
-    if (!procedures) return [];
+      const createExpenses = (proc.expenses ?? [])
+        .filter((e) => !e.id)
+        .map((e) => ({
+          value: e.value,
+          description: e.description,
+          paymentType: e.paymentType,
+        }));
 
-    return procedures.map((proc) => {
-      const base: BaseProcedure = {
+      const baseCreate: BaseProcedure = {
         procedureType: proc.procedureType,
         dtOfProcedure: proc.dtOfProcedure,
         description: proc.description,
         veterinarian: proc.veterinarian,
         observation: proc.observation,
-        expenses: proc.expenses,
+        expenses: createExpenses,
       };
 
       switch (proc.procedureType) {
         case AnimalProcedureEnum.VACCINE:
           return {
-            ...base,
+            ...baseCreate,
             procedureType: AnimalProcedureEnum.VACCINE,
             payload: {
               vaccineName: proc.vaccineName ?? "",
@@ -358,7 +370,7 @@ export const useAnimalForm = ({
 
         case AnimalProcedureEnum.MEDICINE:
           return {
-            ...base,
+            ...baseCreate,
             procedureType: AnimalProcedureEnum.MEDICINE,
             payload: {
               medicineName: proc.medicineName ?? "",
@@ -372,7 +384,7 @@ export const useAnimalForm = ({
 
         case AnimalProcedureEnum.SURGERY:
           return {
-            ...base,
+            ...baseCreate,
             procedureType: AnimalProcedureEnum.SURGERY,
             payload: {
               surgeryName: proc.surgeryName ?? "",
@@ -386,7 +398,7 @@ export const useAnimalForm = ({
 
         case AnimalProcedureEnum.MISCELLANEOUS:
           return {
-            ...base,
+            ...baseCreate,
             procedureType: AnimalProcedureEnum.MISCELLANEOUS,
             payload: {
               reason: proc.reason ?? "",
@@ -396,6 +408,76 @@ export const useAnimalForm = ({
       }
     });
   };
+
+  // const mapProceduresToCreateDto = (
+  //   procedures: AnimalFormData["animalProcedures"],
+  // ): CreateAnimalProcedureDispatcherDto[] => {
+  //   if (!procedures) return [];
+
+  //   return procedures.map((proc) => {
+  //     const base: BaseProcedure = {
+  //       procedureType: proc.procedureType,
+  //       dtOfProcedure: proc.dtOfProcedure,
+  //       description: proc.description,
+  //       veterinarian: proc.veterinarian,
+  //       observation: proc.observation,
+  //       expenses: proc.expenses,
+  //     };
+
+  //     switch (proc.procedureType) {
+  //       case AnimalProcedureEnum.VACCINE:
+  //         return {
+  //           ...base,
+  //           procedureType: AnimalProcedureEnum.VACCINE,
+  //           payload: {
+  //             vaccineName: proc.vaccineName ?? "",
+  //             vaccineType: proc.vaccineType,
+  //             batch: proc.batch,
+  //             manufacturer: proc.manufacturer,
+  //             dtOfExpiration: proc.dtOfExpiration,
+  //           } satisfies VaccinePayload,
+  //         };
+
+  //       case AnimalProcedureEnum.MEDICINE:
+  //         return {
+  //           ...base,
+  //           procedureType: AnimalProcedureEnum.MEDICINE,
+  //           payload: {
+  //             medicineName: proc.medicineName ?? "",
+  //             reason: proc.reason,
+  //             dosage: proc.dosage,
+  //             frequency: proc.frequency,
+  //             dtOfStart: proc.dtOfStart,
+  //             dtOfEnd: proc.dtOfEnd,
+  //           } satisfies MedicinePayload,
+  //         };
+
+  //       case AnimalProcedureEnum.SURGERY:
+  //         return {
+  //           ...base,
+  //           procedureType: AnimalProcedureEnum.SURGERY,
+  //           payload: {
+  //             surgeryName: proc.surgeryName ?? "",
+  //             surgeryType: proc.surgeryType,
+  //             local: proc.local,
+  //             reason: proc.reason,
+  //             dtOfDuration: proc.dtOfDuration,
+  //             recomendations: proc.recomendations,
+  //           } satisfies SurgeryPayload,
+  //         };
+
+  //       case AnimalProcedureEnum.MISCELLANEOUS:
+  //         return {
+  //           ...base,
+  //           procedureType: AnimalProcedureEnum.MISCELLANEOUS,
+  //           payload: {
+  //             reason: proc.reason ?? "",
+  //             recomendations: proc.recomendations,
+  //           } satisfies MiscellaneousPayload,
+  //         };
+  //     }
+  //   });
+  // };
 
   const handleCloseModal = () => {
     onCancel();

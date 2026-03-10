@@ -109,7 +109,7 @@ export default function Animal() {
                         </p>
                         <Button onClick={handleOpenCreateModal}>
                             <Plus className="mr-2 h-4 w-4" />
-                            Cadastrar Primeiro Adotante
+                            Cadastrar Primeiro animal
                         </Button>
                     </div>
                 )}
@@ -134,7 +134,7 @@ export default function Animal() {
                 <Dialog open={isEditModalOpen} onOpenChange={handleCloseEditModalFn}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
                         <DialogHeader>
-                            <DialogTitle>Editar Adotante</DialogTitle>
+                            <DialogTitle>Editar Animal</DialogTitle>
                         </DialogHeader>
                         <AnimalForm
                             mode="edit"
@@ -149,7 +149,7 @@ export default function Animal() {
                 <Dialog open={isViewModalOpen} onOpenChange={handleCloseViewModalFn}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
                         <DialogHeader>
-                            <DialogTitle>Detalhes do Adotante</DialogTitle>
+                            <DialogTitle>Detalhes do Animal</DialogTitle>
                         </DialogHeader>
                         <AnimalForm
                             mode="view"
