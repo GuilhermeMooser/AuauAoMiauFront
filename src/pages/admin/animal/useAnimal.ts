@@ -195,7 +195,7 @@ export const useAnimal = () => {
 
   const handleDeleteSuccess = useCallback(
     (deletedId: string) => {
-      removeItemFromScreen<Animal>(["animalss"], deletedId);
+      removeItemFromScreen<Animal>(["animals"], deletedId);
     },
     [removeItemFromScreen],
   );
