@@ -32,7 +32,7 @@ const App = () => (
             path="/"
             element={
               getAuth()
-                ? <Navigate to="/admin/dashboard" replace />
+                ? <Navigate to="/admin/animais" replace />
                 : <Navigate to="/login" replace />
             }
           />
@@ -41,7 +41,7 @@ const App = () => (
           {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
 
           {/* Routes - Authentication disabled for development */}
-          <Route
+          {/* <Route
             path="/admin/dashboard"
             element={
               <ProtectedRoute>
@@ -50,7 +50,7 @@ const App = () => (
                 </DashboardLayout>
               </ProtectedRoute>
             }
-          />
+          /> */}
 
           <Route
             path="/admin/animais"
@@ -62,26 +62,6 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-
-          <Route
-            path="/admin/animaisOld"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <AnimaisPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* <Route
-            path="/adotantesOld"
-            element={
-              <DashboardLayout>
-                <AdotantesPage />
-              </DashboardLayout>
-            }
-          /> */}
 
           <Route
             path="/admin/adotantes"

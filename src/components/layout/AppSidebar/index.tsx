@@ -21,7 +21,7 @@ import {
 import { getAuth } from "@/utils/auth";
 
 const mainItems = [
-  { title: "Dashboard", url: "/admin/dashboard", icon: Home },
+  // { title: "Dashboard", url: "/admin/dashboard", icon: Home },
   { title: "Animais", url: "/admin/animais", icon: Heart },
   { title: "Adotantes", url: "/admin/adotantes", icon: Users },
   { title: "Termos", url: "/admin/termos", icon: FileText },

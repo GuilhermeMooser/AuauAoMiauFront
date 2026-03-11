@@ -187,7 +187,7 @@ export const useAnimalForm = ({
       setSubmitting(false);
       toast({
         title: "Sucesso",
-        description: "Adotante atualizado com sucesso",
+        description: "Animal atualizado com sucesso",
         variant: "success",
       });
       if (onUpdateSuccess) {
@@ -199,7 +199,7 @@ export const useAnimalForm = ({
       setSubmitting(false);
       mutationErrorHandling(
         error,
-        "Falha ao atualizar o adotante",
+        "Falha ao atualizar o animal",
         setErrorMessage,
       );
     },

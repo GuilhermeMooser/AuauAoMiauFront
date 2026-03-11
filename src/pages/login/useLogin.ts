@@ -52,7 +52,7 @@ export const useLogin = () => {
         description: "Autenticação realizada",
         variant: "success",
       });
-      navigate("/admin/dashboard");
+      navigate("/admin/animals");
     },
     onError: (error) => {
       setIsLoading(false);
