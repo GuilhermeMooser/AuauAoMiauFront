@@ -63,6 +63,7 @@ export default function Terms() {
                     onToggleFilters={onToggleFilters}
                     filtersCount={filtersCount}
                     showFilterButton
+                    showSearchInput={false}
                 />
 
                 <TermFilterModal
