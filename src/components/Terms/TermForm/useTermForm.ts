@@ -1,7 +1,5 @@
 import {getAdoptersPaginated} from "@/services/adopter";
 import {getAnimalsPaginated} from "@/services/animal";
-import {PaginationUtils} from "@/utils/paginationUtils";
-import {useInfiniteQuery, useMutation} from "@tanstack/react-query";
 import {TermFormProps} from ".";
 import {getAuth} from "@/utils/auth";
 import {useForm} from "react-hook-form";
@@ -12,10 +10,13 @@ import {useFormError} from "@/hooks/useFormError";
 import {useError} from "@/hooks/useError";
 import {createTerm, deleteTerm} from "@/services/terms";
 import {mutationErrorHandling} from "@/utils/errorHandling";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {toast} from "@/hooks/use-toast";
 import {Role} from "@/constants/roles";
 import {useModal} from "@/hooks/useModal";
+import {useMutation, useQuery} from "@tanstack/react-query";
+
+const PAGE_SIZE = 6;
 
 type Props = {
   term: TermFormProps["term"];
@@ -49,8 +50,71 @@ export const useTermForm = ({
 
   const isReadOnly = mode === "view";
 
-  /** Mutations */
+  /** Animal search state */
+  const [animalPage, setAnimalPage] = useState(1);
+  const [searchTermAnimal, setSearchTermAnimal] = useState("");
+  const [debouncedSearchAnimal, setDebouncedSearchAnimal] = useState("");
 
+  /** Adopter search state */
+  const [adopterPage, setAdopterPage] = useState(1);
+  const [searchTermAdopter, setSearchTermAdopter] = useState("");
+  const [debouncedSearchAdopter, setDebouncedSearchAdopter] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDebouncedSearchAnimal(searchTermAnimal),
+      500,
+    );
+    return () => clearTimeout(timer);
+  }, [searchTermAnimal]);
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDebouncedSearchAdopter(searchTermAdopter),
+      500,
+    );
+    return () => clearTimeout(timer);
+  }, [searchTermAdopter]);
+
+  /** Animal query — simple paginated (not infinite, since we control pages manually) */
+  const {data: animalQueryData, isLoading: animalIsLoading} = useQuery({
+    queryKey: ["animals", debouncedSearchAnimal, animalPage],
+    queryFn: () =>
+      getAnimalsPaginated(
+        debouncedSearchAnimal,
+        undefined,
+        animalPage,
+        PAGE_SIZE,
+      ),
+    staleTime: 30000,
+  });
+
+  const animalsData = {
+    items: animalQueryData?.items ?? [],
+    meta: animalQueryData?.meta,
+  };
+  const animalTotalPages = animalQueryData?.meta?.totalPages ?? 1;
+
+  /** Adopter query */
+  const {data: adopterQueryData, isLoading: adopterIsLoading} = useQuery({
+    queryKey: ["adopters", debouncedSearchAdopter, adopterPage],
+    queryFn: () =>
+      getAdoptersPaginated(
+        debouncedSearchAdopter,
+        undefined,
+        adopterPage,
+        PAGE_SIZE,
+      ),
+    staleTime: 30000,
+  });
+
+  const adoptersData = {
+    items: adopterQueryData?.items ?? [],
+    meta: adopterQueryData?.meta,
+  };
+  const adopterTotalPages = adopterQueryData?.meta?.totalPages ?? 1;
+
+  /** Mutations */
   const {mutate: createTermMutation} = useMutation({
     mutationFn: async (createTermDto: CreateTermDto) => {
       return (await createTerm(createTermDto)).data;
@@ -59,7 +123,7 @@ export const useTermForm = ({
       setSubmitting(false);
       toast({
         title: "Sucesso",
-        description: "Animal criado com sucesso",
+        description: "Termo de compromisso criado com sucesso",
         variant: "success",
       });
       if (onCreateSuccess) {
@@ -69,7 +133,11 @@ export const useTermForm = ({
     },
     onError: (error) => {
       setSubmitting(false);
-      mutationErrorHandling(error, "Falha ao criar o animal", setErrorMessage);
+      mutationErrorHandling(
+        error,
+        "Falha ao criar o termo de compromisso",
+        setErrorMessage,
+      );
     },
   });
 
@@ -82,20 +150,6 @@ export const useTermForm = ({
     if (mode === "create") {
       createTermMutation(data);
     }
-    // else if (mode === "edit") {
-    //   if (!animal?.id) {
-    //     setErrorMessage("O código do animal não pode ser nulo");
-    //     return;
-    //   }
-    //   const dto: UpdateAnimalDto = {
-    //     ...data,
-    //     id: animal.id,
-    //     expenses: mapExpensesToCreateOrUpdateDto(data.expenses),
-    //     animalProcedures: mapProceduresToCreateUpdateDto(data.animalProcedures),
-    //   };
-
-    //   updateAnimalMutation(dto);
-    // }
   };
 
   const handleCloseModal = () => {
@@ -142,74 +196,6 @@ export const useTermForm = ({
     },
   });
 
-  /** Animal Data */
-  const {
-    data: animalData,
-    error: errorAnimalsFetch,
-    fetchNextPage: animalFetchNextPage,
-    hasNextPage: animalHasNextPage,
-    isFetchingNextPage: animalIsFetchingNextPage,
-    isLoading: animalIsLoading,
-    refetch: animalRefetch,
-  } = useInfiniteQuery({
-    queryKey: ["animals", searchTermAnimal],
-    queryFn: async ({pageParam = 1}) => {
-      const response = getAnimalsPaginated(
-        searchTermAnimal,
-        undefined, //Sem Filtros
-        pageParam,
-        6,
-      );
-      return response;
-    },
-    getNextPageParam: (lastPage) => {
-      const {currentPage, totalPages} = lastPage.meta;
-      return currentPage < totalPages ? currentPage + 1 : undefined;
-    },
-    initialPageParam: 1,
-    enabled: true,
-    staleTime: 30000,
-  });
-
-  const animalsData = {
-    items: animalData?.pages.flatMap((page) => page.items) ?? [],
-    meta: animalData?.pages[animalData.pages.length - 1]?.meta,
-  };
-
-  /** Adopter Data */
-  const {
-    data: adopterData,
-    error: errorAdoptersFetch,
-    fetchNextPage: adopterFetchNextPage,
-    hasNextPage: adopterHasNextPage,
-    isFetchingNextPage: adopterIsFetchingNextPage,
-    isLoading: adopterIsLoading,
-    refetch: adopterRefetch,
-  } = useInfiniteQuery({
-    queryKey: ["adopters", searchTermAdopter],
-    queryFn: async ({pageParam = 1}) => {
-      const response = getAdoptersPaginated(
-        searchTermAdopter,
-        undefined,
-        pageParam,
-        6,
-      );
-      return response;
-    },
-    getNextPageParam: (lastPage) => {
-      const {currentPage, totalPages} = lastPage.meta;
-      return currentPage < totalPages ? currentPage + 1 : undefined;
-    },
-    initialPageParam: 1,
-    enabled: true,
-    staleTime: 30000,
-  });
-
-  const adoptersData = {
-    items: adopterData?.pages.flatMap((page) => page.items) ?? [],
-    meta: adopterData?.pages[adopterData.pages.length - 1]?.meta,
-  };
-
   return {
     form,
     isReadOnly,
@@ -224,5 +210,23 @@ export const useTermForm = ({
     isModalDeleteTermOpen,
     handleCloseDeleteTermModal,
     handleDeleteTermConfirm,
+
+    // Animal search
+    searchTermAnimal,
+    setSearchTermAnimal,
+    animalsData,
+    animalIsLoading,
+    animalPage,
+    setAnimalPage,
+    animalTotalPages,
+
+    // Adopter search
+    searchTermAdopter,
+    setSearchTermAdopter,
+    adoptersData,
+    adopterIsLoading,
+    adopterPage,
+    setAdopterPage,
+    adopterTotalPages,
   };
 };
