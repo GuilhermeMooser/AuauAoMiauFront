@@ -20,7 +20,7 @@ export default function FilterInputSearch({
 }: FilterInputSearchProps) {
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-      <div className="flex-1 max-w-full sm:max-w-md">
+      {/* <div className="flex-1 max-w-full sm:max-w-md">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -30,7 +30,7 @@ export default function FilterInputSearch({
             onChange={(event) => handleChangeFilter(event.target.value)}
           />
         </div>
-      </div>
+      </div> */}
       {showFilterButton && (
         <Button
           variant="outline"

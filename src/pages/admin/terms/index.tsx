@@ -46,7 +46,7 @@ export default function Terms() {
         isViewModalOpen,
         handleCloseViewModalFn
     } = useTerms();
-console.log(termsData)
+
     return (
         <>
             <div className="space-y-6">

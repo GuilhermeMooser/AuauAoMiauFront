@@ -38,7 +38,7 @@ export default function TermFilterModal(
     return (
         <>
             {isOpen && (
-                <Card>
+                <Card className="w-1/3">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Filter className="h-5 w-5" />
@@ -53,7 +53,7 @@ export default function TermFilterModal(
                     </CardHeader>
                     <CardContent>
                         <Form {...form}>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4 pb-4">
                                 <FormField
                                     control={form.control}
                                     name="createdAt"
