@@ -14,7 +14,6 @@ export type UF = {
 
 export const locationService = {
   getUFs: async (): Promise<UF[]> => {
-    console.log('Chamou query')
     const response = await api.get<UF[]>("/uf/v1");
     return response.data;
   },

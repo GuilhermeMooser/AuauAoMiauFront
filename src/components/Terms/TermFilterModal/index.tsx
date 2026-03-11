@@ -1,4 +1,5 @@
-import { useAnimalFilterModal } from "./useAnimalFilterModal";
+import { TermFilterFormData, TermFilters } from "@/types/terms";
+import { useTermsFilterModal } from "./useTermsFilterModal";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,29 +12,28 @@ import {
 import { Filter, Search, X } from "lucide-react";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Button } from "@/components/ui/button";
-import Alert from "@/components/Alert";
-import { AnimalFilterFormData, AnimalFilters } from "@/types/animal";
 
-type AnimalFilterModalProps = {
+type TermFilterModalProps = {
     isOpen: boolean;
-    activeFilters: AnimalFilters;
-    handleApplyFilter: (data: AnimalFilterFormData) => void;
+    activeFilters: TermFilters;
+    handleApplyFilter: (data: TermFilterFormData) => void;
     handleClearFilter: () => void;
     filtersCount?: number;
 }
 
-export default function AnimalFilterModal({
-    isOpen,
-    activeFilters,
-    handleApplyFilter,
-    handleClearFilter,
-    filtersCount = 0
-}: AnimalFilterModalProps) {
-
+export default function TermFilterModal(
+    {
+        isOpen,
+        activeFilters,
+        handleApplyFilter,
+        handleClearFilter,
+        filtersCount = 0
+    }: TermFilterModalProps
+) {
     const {
         form,
         handleClear,
-    } = useAnimalFilterModal({ activeFilters })
+    } = useTermsFilterModal({ activeFilters })
 
     return (
         <>
@@ -60,54 +60,6 @@ export default function AnimalFilterModal({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Data de Cadastro (Início)</FormLabel>
-                                            <FormControl>
-                                                <DatePicker
-                                                    date={field.value}
-                                                    onDateChange={field.onChange}
-                                                    placeholder="Selecione a data"
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="dtOfAdoption"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Data de Adoção</FormLabel>
-                                            <FormControl>
-                                                <DatePicker
-                                                    date={field.value}
-                                                    onDateChange={field.onChange}
-                                                    placeholder="Selecione a data"
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="dtOfRescue"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Data de Resgate</FormLabel>
-                                            <FormControl>
-                                                <DatePicker
-                                                    date={field.value}
-                                                    onDateChange={field.onChange}
-                                                    placeholder="Selecione a data"
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="dtOfDeath"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Data de Morte</FormLabel>
                                             <FormControl>
                                                 <DatePicker
                                                     date={field.value}

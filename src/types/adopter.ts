@@ -1,6 +1,5 @@
 import {Animal} from "./animalAntigo";
 import {City} from "./city";
-import {Term} from "./term";
 import {Audit} from "./audit";
 import {Pagination} from "./pagination";
 import z from "zod";
@@ -8,6 +7,7 @@ import {
   adopterFiltersSchema,
   adopterSchema,
 } from "@/validations/Adopter/schemas";
+import {Terms} from "./terms";
 
 type ContactType = "telefone" | "celular" | "whatsapp";
 
@@ -47,7 +47,7 @@ export type Adopter = {
   activeNotification: boolean;
   dtToNotify?: Date;
   animals: Animal[];
-  terms?: Term[];
+  terms?: Terms[];
   audit: Audit;
 };
 

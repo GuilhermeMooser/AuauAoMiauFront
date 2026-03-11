@@ -12,7 +12,6 @@ export const useAnimalFilterModal = ({activeFilters}: Props) => {
     resolver: zodResolver(animalFiltersSchema),
     defaultValues: {
       createdAt: activeFilters.createdAt,
-      dtOfBirth: activeFilters.dtOfBirth,
       dtOfAdoption: activeFilters.dtOfAdoption,
       dtOfRescue: activeFilters.dtOfRescue,
       dtOfDeath: activeFilters.dtOfDeath,
@@ -22,7 +21,6 @@ export const useAnimalFilterModal = ({activeFilters}: Props) => {
   const handleClear = () => {
     form.reset({
       createdAt: null,
-      dtOfBirth: null,
       dtOfAdoption: null,
       dtOfRescue: null,
       dtOfDeath: null,

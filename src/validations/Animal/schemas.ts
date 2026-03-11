@@ -23,7 +23,7 @@ export const animalSchema = z.object({
 
   locationOfRescue: z.string().optional(),
 
-  typeId: z.number({message: "A tipo é obrigatório"}).min(1, "O tipo é obrigatório"),
+  typeId: z.number({message: "O tipo é obrigatório"}).min(1, "O tipo é obrigatório"),
 
   size: z.string().nonempty("Tamanho é obrigatório"),
   gender: z.string().nonempty("Sexo é obrigatório"),

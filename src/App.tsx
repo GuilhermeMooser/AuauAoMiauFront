@@ -4,10 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import Dashboard from "./pages/Dashboard";
-import AnimaisPage from "./pages/animaisAntigo/page";
-// import AdotantesPage from "./pages/adotantesAntigo/page";
-import Termos from "./pages/Termos";
 import NotFound from "./pages/NotFound";
 import queryClient from "./lib/queryClient";
 import Adopter from "./pages/admin/adopter";
@@ -16,6 +12,7 @@ import { getAuth } from "./utils/auth";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Users from "./pages/admin/users";
 import Animal from "./pages/admin/animal";
+import Terms from "./pages/admin/terms";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -79,7 +76,7 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <DashboardLayout>
-                  <Termos />
+                  <Terms />
                 </DashboardLayout>
               </ProtectedRoute>
             }
