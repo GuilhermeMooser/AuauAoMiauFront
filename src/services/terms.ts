@@ -1,4 +1,9 @@
-import {FindAllTermsPaginated, TermFilters, Terms} from "@/types/terms";
+import {
+  CreateTermDto,
+  FindAllTermsPaginated,
+  TermFilters,
+  Terms,
+} from "@/types/terms";
 import {api} from "./api";
 import {addSearchParamsInUrl} from "@/utils/generatedPaginatedUrl";
 
@@ -22,5 +27,19 @@ export const getTermsPaginated = async (
 
 export const findTermById = async (id: string) => {
   const response = await api.get<Terms>(`/terms/v1/${id}`);
+  return response;
+};
+
+export const createTerm = async (createTermDto: CreateTermDto) => {
+  const body = {
+    ...createTermDto,
+  };
+
+  const response = await api.post<Terms>("/terms/v1", body);
+  return response;
+};
+
+export const deleteTerm = async (id: string) => {
+  const response = await api.delete<void>(`/terms/v1/${id}`);
   return response;
 };

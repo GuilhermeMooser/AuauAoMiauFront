@@ -20,7 +20,28 @@ export default function TermForm({
     onUpdateSuccess
 }: TermFormProps) {
 
-    useTermForm()
+    const {
+        form,
+        isReadOnly,
+        canExcludeTerm,
+        handleDeleteTerm,
+        handleCloseModal,
+        submitting,
+        handleButtonConfirm,
+        onError,
+        errorMessage,
+        clearError,
+        isModalDeleteTermOpen,
+        handleCloseDeleteTermModal,
+        handleDeleteTermConfirm,
+    } = useTermForm({
+        mode,
+        onCancel,
+        term,
+        onCreateSuccess,
+        onDeleteSuccess,
+        onUpdateSuccess
+    })
 
     return (
         <>

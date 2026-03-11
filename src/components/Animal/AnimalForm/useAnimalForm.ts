@@ -207,7 +207,7 @@ export const useAnimalForm = ({
 
   /** Actions */
   const [submitting, setSubmitting] = useState<boolean>(false);
-  JSON.stringify(form.formState.errors, null, 2);
+
   const handleButtonConfirm = (data: AnimalFormData) => {
     setSubmitting(true);
 
