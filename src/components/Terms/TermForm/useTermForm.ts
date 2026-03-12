@@ -80,7 +80,7 @@ export const useTermForm = ({
 
   /** Animal query — simple paginated (not infinite, since we control pages manually) */
   const {data: animalQueryData, isLoading: animalIsLoading} = useQuery({
-    queryKey: ["animals", debouncedSearchAnimal, animalPage],
+    queryKey: ["terms-animals", debouncedSearchAnimal, animalPage],
     queryFn: () =>
       getAnimalsPaginated(
         debouncedSearchAnimal,
@@ -88,7 +88,7 @@ export const useTermForm = ({
         animalPage,
         PAGE_SIZE,
       ),
-    staleTime: 30000,
+    staleTime: 0,
   });
 
   const animalsData = {
@@ -99,7 +99,7 @@ export const useTermForm = ({
 
   /** Adopter query */
   const {data: adopterQueryData, isLoading: adopterIsLoading} = useQuery({
-    queryKey: ["adopters", debouncedSearchAdopter, adopterPage],
+    queryKey: ["terms-adopters", debouncedSearchAdopter, adopterPage],
     queryFn: () =>
       getAdoptersPaginated(
         debouncedSearchAdopter,
@@ -107,7 +107,7 @@ export const useTermForm = ({
         adopterPage,
         PAGE_SIZE,
       ),
-    staleTime: 30000,
+    staleTime: 0,
   });
 
   const adoptersData = {
