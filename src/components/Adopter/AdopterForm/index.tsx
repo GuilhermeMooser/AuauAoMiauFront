@@ -17,6 +17,7 @@ import {
 import {
   Bell,
   BellOff,
+  FileText,
   Link,
   Loader2,
   MapPin,
@@ -94,6 +95,7 @@ export default function AdopterForm({
     canSetPrincipal,
     handleDeleteAdopter,
     handleDeleteAdopterConfirm,
+    navigate
   } = useAdopterForm({
     adopter,
     mode,
@@ -253,9 +255,8 @@ export default function AdopterForm({
             </div>
 
             <div
-              className={`grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg ${
-                !activeNotificationWatcher ? "hidden" : ""
-              }`}
+              className={`grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg ${!activeNotificationWatcher ? "hidden" : ""
+                }`}
             >
               <FormField
                 control={form.control}
@@ -689,123 +690,82 @@ export default function AdopterForm({
               <Link className="h-5 w-5" />
               Animais Vinculados
             </CardTitle>
-            <CardDescription>Vincule animais a este adotante</CardDescription>
+            <CardDescription>Animais associados a este adotante</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <Label className="text-base font-medium">
-                Animais Vinculados
-              </Label>
-              <p className="text-sm text-muted-foreground mb-4">
-                Pesquise e vincule animais a este adotante
+          <CardContent>
+            {!adopter?.animals?.length ? (
+              <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                Nenhum animal vinculado.
               </p>
-
-              {/* {getLinkedAnimais().length > 0 && (
-                <div className="mb-4">
-                  <Label className="text-sm font-medium mb-2 block">Animais Vinculados Atualmente:</Label>
-                  <div className="space-y-2">
-                    {getLinkedAnimais().map((animal) => (
-                      <div key={animal.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="text-2xl">
-                            {animal.tipo === 'cao' ? '🐕' : '🐱'}
-                          </div>
-                          <div>
-                            <div className="font-medium">{animal.nome}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {animal.raca} • {animal.idade} {animal.idade === 1 ? 'ano' : 'anos'}
-                            </div>
-                          </div>
-                        </div>
-                        {!isReadOnly && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => unlinkAnimal(animal.id)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )} */}
-
-              {/* Animal Search */}
-              {/* {!isReadOnly && (
-                <div className="relative">
-                  <Label className="text-sm font-medium mb-2 block">
-                    Pesquisar e Adicionar Animal:
-                  </Label>
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Buscar por nome ou raça do animal..."
-                      value={animalSearch}
-                      onChange={(e) => {
-                        setAnimalSearch(e.target.value);
-                        setShowAnimalResults(e.target.value.length > 0);
-                      }}
-                      className="pl-8"
-                      onFocus={() =>
-                        setShowAnimalResults(animalSearch.length > 0)
-                      }
-                    />
-                  </div>
-
-                  {/* Animal Search Results */}
-                  {/* {showAnimalResults && animalSearch && (
-                    <div className="absolute z-50 w-full mt-1 bg-background border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                      {filteredAnimais.length > 0 ? (
-                        filteredAnimais.map((animal) => {
-                          const isLinked = getLinkedAnimais().some(linked => linked.id === animal.id);
-                          return (
-                            <div
-                              key={animal.id}
-                              className={`p-3 hover:bg-muted cursor-pointer border-b border-border last:border-b-0 ${
-                                isLinked ? 'opacity-50' : ''
-                              }`}
-                              onClick={() => !isLinked && linkAnimal(animal.id)}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <div className="text-lg">
-                                    {animal.tipo === 'cao' ? '🐕' : '🐱'}
-                                  </div>
-                                  <div>
-                                    <div className="font-medium">{animal.nome}</div>
-                                    <div className="text-sm text-muted-foreground">
-                                      {animal.raca} • {animal.idade} {animal.idade === 1 ? 'ano' : 'anos'}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Badge variant="outline" className="text-xs">
-                                    {animal.status === 'disponivel' ? 'Disponível' : 
-                                     animal.status === 'adotado' ? 'Adotado' : 'Em Processo'}
-                                  </Badge>
-                                  {isLinked && (
-                                    <Badge variant="secondary" className="text-xs">
-                                      Já Vinculado
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="p-3 text-sm text-muted-foreground text-center">
-                          Nenhum animal encontrado
-                        </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {adopter.animals.map((animal) => (
+                  <button
+                    key={animal.id}
+                    type="button"
+                    onClick={() => navigate(`/admin/animais`)}
+                    className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer"
+                  >
+                    <span className="font-medium truncate w-full">{animal.name}</span>
+                    {animal.breed && (
+                      <span className="text-xs text-muted-foreground truncate w-full">
+                        {animal.breed}
+                      </span>
+                    )}
+                    <div className="flex flex-wrap gap-1 mt-0.5">
+                      {animal.type && (
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                          {animal.type.type}
+                        </Badge>
+                      )}
+                      {animal.age != null && (
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                          {animal.age} {animal.age === 1 ? "ano" : "anos"}
+                        </Badge>
+                      )}
+                      {animal.castrated && (
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                          Castrado
+                        </Badge>
                       )}
                     </div>
-                  )} */}
-                {/* </div> */}
-              {/* )} */}
-            </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Termos de Compromisso
+            </CardTitle>
+            <CardDescription>Termos associados a este adotante</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {!adopter?.terms?.length ? (
+              <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                Nenhum termo de compromisso vinculado.
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {adopter.terms.map((term, index) => (
+                  <button
+                    key={term.id}
+                    type="button"
+                    onClick={() => navigate(`/admin/termos`)}
+                    className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer"
+                  >
+                    <span className="font-medium">Termo {index + 1}</span>
+                    <span className="text-xs text-muted-foreground truncate w-full">
+                      {term.id}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 

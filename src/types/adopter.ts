@@ -1,4 +1,3 @@
-import {Animal} from "./animalAntigo";
 import {City} from "./city";
 import {Audit} from "./audit";
 import {Pagination} from "./pagination";
@@ -8,6 +7,7 @@ import {
   adopterSchema,
 } from "@/validations/Adopter/schemas";
 import {Terms} from "./terms";
+import { Animal } from "./animal";
 
 type ContactType = "telefone" | "celular" | "whatsapp";
 

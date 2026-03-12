@@ -1,24 +1,21 @@
-import { AdopterFormData, CreateAdopterDto, UpdateAdopterDto } from "@/types";
-import { adopterSchema } from "@/validations/Adopter/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { AdopterFormProps } from ".";
-import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { cityCache, stateUfCache } from "@/constants/cacheNames";
-import { City, locationService } from "@/services/locationService";
-import { toast } from "@/hooks/use-toast";
-import { useFormError } from "@/hooks/useFormError";
-import {
-  createAdopter,
-  deleteAdopter,
-  updateAdopter,
-} from "@/services/adopter";
-import { mutationErrorHandling } from "@/utils/errorHandling";
-import { useError } from "@/hooks/useError";
-import { useModal } from "@/hooks/useModal";
-import { getAuth } from "@/utils/auth";
-import { Role } from "@/constants/roles";
+import {AdopterFormData, CreateAdopterDto, UpdateAdopterDto} from "@/types";
+import {adopterSchema} from "@/validations/Adopter/schemas";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useFieldArray, useForm} from "react-hook-form";
+import {AdopterFormProps} from ".";
+import {useEffect, useState} from "react";
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {cityCache, stateUfCache} from "@/constants/cacheNames";
+import {City, locationService} from "@/services/locationService";
+import {toast} from "@/hooks/use-toast";
+import {useFormError} from "@/hooks/useFormError";
+import {createAdopter, deleteAdopter, updateAdopter} from "@/services/adopter";
+import {mutationErrorHandling} from "@/utils/errorHandling";
+import {useError} from "@/hooks/useError";
+import {useModal} from "@/hooks/useModal";
+import {getAuth} from "@/utils/auth";
+import {Role} from "@/constants/roles";
+import {useNavigate} from "react-router-dom";
 
 type Props = {
   adopter: AdopterFormProps["adopter"];
@@ -38,6 +35,7 @@ export const useAdopterForm = ({
   onDeleteSuccess,
 }: Props) => {
   const auth = getAuth();
+  const navigate = useNavigate();
 
   /** Form */
   const form = useForm<AdopterFormData>({
@@ -57,8 +55,8 @@ export const useAdopterForm = ({
     },
   });
 
-  const { onError } = useFormError<AdopterFormData>();
-  const { clearError, errorMessage, setErrorMessage } = useError();
+  const {onError} = useFormError<AdopterFormData>();
+  const {clearError, errorMessage, setErrorMessage} = useError();
   const activeNotificationWatcher = form.watch("activeNotification");
   const isReadOnly = mode === "view";
 
@@ -131,7 +129,7 @@ export const useAdopterForm = ({
     name: "addresses",
   });
 
-  const { data: statesData = [], isLoading: isLoadingStates } = useQuery({
+  const {data: statesData = [], isLoading: isLoadingStates} = useQuery({
     queryKey: [stateUfCache],
     queryFn: () => locationService.getUFs(),
   });
@@ -156,14 +154,14 @@ export const useAdopterForm = ({
             },
           },
         },
-        { shouldFocus: false }
+        {shouldFocus: false},
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prState, mode]);
 
   const [citiesByState, setCitiesByState] = useState<Record<number, City[]>>(
-    {}
+    {},
   );
 
   const addresses = form.watch("addresses") || [];
@@ -171,8 +169,8 @@ export const useAdopterForm = ({
     new Set(
       addresses
         .map((addr) => addr?.city?.stateUf?.id)
-        .filter((id): id is number => id !== undefined && id > 0)
-    )
+        .filter((id): id is number => id !== undefined && id > 0),
+    ),
   );
 
   const citiesQueries = useQuery({
@@ -184,7 +182,7 @@ export const useAdopterForm = ({
         uniqueStateIds.map(async (stateId) => {
           const cities = await locationService.getCitiesByUF(stateId);
           results[stateId] = cities;
-        })
+        }),
       );
 
       return results;
@@ -273,7 +271,7 @@ export const useAdopterForm = ({
   };
 
   /**Mutations */
-  const { mutate: createAdopterMutation } = useMutation({
+  const {mutate: createAdopterMutation} = useMutation({
     mutationFn: async (createAdopterDto: CreateAdopterDto) => {
       return (await createAdopter(createAdopterDto)).data;
     },
@@ -294,14 +292,14 @@ export const useAdopterForm = ({
       mutationErrorHandling(
         error,
         "Falha ao criar o adotante",
-        setErrorMessage
+        setErrorMessage,
       );
     },
   });
 
-  const { mutate: updateAdopterMutation } = useMutation({
+  const {mutate: updateAdopterMutation} = useMutation({
     mutationFn: async (updateAdopterDto: UpdateAdopterDto) => {
-      return (await updateAdopter({ ...updateAdopterDto })).data;
+      return (await updateAdopter({...updateAdopterDto})).data;
     },
     onSuccess: (data) => {
       setSubmitting(false);
@@ -320,7 +318,7 @@ export const useAdopterForm = ({
       mutationErrorHandling(
         error,
         "Falha ao atualizar o adotante",
-        setErrorMessage
+        setErrorMessage,
       );
     },
   });
@@ -345,7 +343,7 @@ export const useAdopterForm = ({
       });
     }
   };
-  
+
   /** Delete Adopter */
   const canExcludeAdopter =
     mode === "edit" && auth?.user.role.name === Role.Admin;
@@ -365,7 +363,7 @@ export const useAdopterForm = ({
     deleteAdopterMutation(adopter.id);
   };
 
-  const { mutate: deleteAdopterMutation } = useMutation({
+  const {mutate: deleteAdopterMutation} = useMutation({
     mutationFn: async (id: string) => {
       return (await deleteAdopter(id)).data;
     },
@@ -381,7 +379,7 @@ export const useAdopterForm = ({
       mutationErrorHandling(
         error,
         "Falha ao excluir o adotante",
-        setErrorMessage
+        setErrorMessage,
       );
     },
   });
@@ -423,5 +421,6 @@ export const useAdopterForm = ({
     getCurrentCityId,
     handleButtonConfirm,
     handleCloseModal,
+    navigate
   };
 };
