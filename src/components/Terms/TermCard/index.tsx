@@ -120,10 +120,10 @@ export default function TermCard(
                             variant="outline"
                             size="sm"
                             className="flex-1"
-                            onClick={() => handleEditClick(term)}
+                            onClick={() => {}}
                         >
                             <Edit className="h-3 w-3 sm:mr-1" />
-                            <span className="hidden sm:inline ml-1">Editar</span>
+                            <span className="hidden sm:inline ml-1">Ver PDF</span>
                         </Button>
                         <Button
                             variant="secondary"

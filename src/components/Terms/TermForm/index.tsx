@@ -21,6 +21,7 @@ import {
     FileText,
     Loader2,
     PawPrint,
+    Plus,
     Search,
     Trash2,
     UserRound,
@@ -30,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Alert from "@/components/Alert";
 import ConfirmModal from "@/components/ConfirmModal";
+import { Navigate } from "react-router-dom";
 
 export type TermFormProps = {
     term?: Terms;
@@ -50,6 +52,7 @@ export default function TermForm({
 }: TermFormProps) {
     const {
         form,
+        navigate,
         isReadOnly,
         canExcludeTerm,
         handleDeleteTerm,
@@ -103,6 +106,14 @@ export default function TermForm({
                                 <PawPrint className="h-5 w-5" />
                                 Animal
                             </div>
+                            {
+                                !isReadOnly && (
+                                    <button className="border-2 p-1 rounded-sm hover:border-primary/60 hover:bg-muted/40"
+                                        onClick={() => navigate("/admin/animais")}>
+                                        <Plus />
+                                    </button>
+                                )
+                            }
                         </CardTitle>
                         <CardDescription>
                             Pesquise e selecione o animal para o termo de compromisso
@@ -244,6 +255,14 @@ export default function TermForm({
                                 <UserRound className="h-5 w-5" />
                                 Adotante
                             </div>
+                            {
+                                !isReadOnly && (
+                                    <button className="border-2 p-1 rounded-sm hover:border-primary/60 hover:bg-muted/40"
+                                        onClick={() => navigate("/admin/adotantes")}>
+                                        <Plus />
+                                    </button>
+                                )
+                            }
                         </CardTitle>
                         <CardDescription>
                             Pesquise e selecione o adotante para o termo de compromisso

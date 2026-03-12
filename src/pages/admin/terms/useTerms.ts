@@ -12,7 +12,7 @@ import {AxiosError} from "axios";
 import {useCallback, useState} from "react";
 
 type ModalAction = "edit" | "view";
-//TODO N VAI TER EDIÇÃO DE TERMO.
+
 export const useTerms = () => {
   const {
     isModalOpen: isCreateModalOpen,
@@ -131,8 +131,6 @@ export const useTerms = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
-    refetch,
   } = useInfiniteQuery({
     queryKey: ["terms", searchTerm, activeFilters],
     queryFn: async ({pageParam = 1}) => {

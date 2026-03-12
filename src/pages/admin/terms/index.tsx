@@ -131,7 +131,7 @@ export default function Terms() {
                     </DialogContent>
                 </Dialog>
                 {/* Edit Modal */}
-                <Dialog open={isEditModalOpen} onOpenChange={handleCloseEditModalFn}>
+                {/* <Dialog open={isEditModalOpen} onOpenChange={handleCloseEditModalFn}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
                         <DialogHeader>
                             <DialogTitle>Editar Termo</DialogTitle>
@@ -144,7 +144,7 @@ export default function Terms() {
                             onDeleteSuccess={handleDeleteSuccess}
                         />
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
                 {/* View Modal */}
                 <Dialog open={isViewModalOpen} onOpenChange={handleCloseViewModalFn}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">

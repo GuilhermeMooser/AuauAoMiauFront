@@ -15,6 +15,7 @@ import {toast} from "@/hooks/use-toast";
 import {Role} from "@/constants/roles";
 import {useModal} from "@/hooks/useModal";
 import {useMutation, useQuery} from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_SIZE = 6;
 
@@ -36,7 +37,8 @@ export const useTermForm = ({
   onDeleteSuccess,
 }: Props) => {
   const auth = getAuth();
-
+  const navigate = useNavigate();
+  
   const form = useForm<TermFormData>({
     resolver: zodResolver(termSchema),
     defaultValues: {
@@ -198,6 +200,7 @@ export const useTermForm = ({
 
   return {
     form,
+    navigate,
     isReadOnly,
     canExcludeTerm,
     handleDeleteTerm,
