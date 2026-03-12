@@ -119,7 +119,7 @@ export default function UserForm({
                 name="user"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome (Login)</FormLabel>
+                    <FormLabel>*Nome (Login)</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -138,7 +138,7 @@ export default function UserForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>*Email</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -157,7 +157,7 @@ export default function UserForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Senha</FormLabel>
+                    <FormLabel>*Senha</FormLabel>
                     <FormControl>
                       <InputPassword
                         {...field}
@@ -181,7 +181,7 @@ export default function UserForm({
                 name="cpf"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CPF</FormLabel>
+                    <FormLabel>*CPF</FormLabel>
                     <FormControl>
                       <MaskedInput
                         mask="999.999.999-99"
@@ -199,7 +199,7 @@ export default function UserForm({
                 name="roleId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tipo de usuário</FormLabel>
+                    <FormLabel>*Tipo de usuário</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}

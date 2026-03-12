@@ -130,7 +130,7 @@ export default function AdopterForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome Completo</FormLabel>
+                    <FormLabel>*Nome Completo</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -149,7 +149,7 @@ export default function AdopterForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>*Email</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -168,7 +168,7 @@ export default function AdopterForm({
                 name="dtOfBirth"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Data de Nascimento</FormLabel>
+                    <FormLabel>*Data de Nascimento</FormLabel>
                     <FormControl className="bg-[#020817]">
                       <DatePicker
                         disabled={isReadOnly}
@@ -188,7 +188,7 @@ export default function AdopterForm({
                 name="rg"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>RG</FormLabel>
+                    <FormLabel>*RG</FormLabel>
                     <FormControl>
                       <MaskedInput
                         mask="99.999.999-9"
@@ -206,7 +206,7 @@ export default function AdopterForm({
                 name="cpf"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CPF</FormLabel>
+                    <FormLabel>*CPF</FormLabel>
                     <FormControl>
                       <MaskedInput
                         mask="999.999.999-99"
@@ -283,7 +283,7 @@ export default function AdopterForm({
                 name="profession"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Profissão</FormLabel>
+                    <FormLabel>*Profissão</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -300,7 +300,7 @@ export default function AdopterForm({
                 name="civilState"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Estado Civil</FormLabel>
+                    <FormLabel>*Estado Civil</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -366,7 +366,7 @@ export default function AdopterForm({
                       name={`contacts.${index}.type`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tipo</FormLabel>
+                          <FormLabel>*Tipo</FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
@@ -396,7 +396,7 @@ export default function AdopterForm({
 
                         return (
                           <FormItem>
-                            <FormLabel>Valor</FormLabel>
+                            <FormLabel>*Valor</FormLabel>
                             <FormControl>
                               {mask ? (
                                 <MaskedInput
@@ -511,7 +511,7 @@ export default function AdopterForm({
                             name={`addresses.${index}.street`}
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Rua</FormLabel>
+                                <FormLabel>*Rua</FormLabel>
                                 <FormControl>
                                   <Input
                                     {...field}
@@ -529,7 +529,7 @@ export default function AdopterForm({
                           name={`addresses.${index}.number`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Número</FormLabel>
+                              <FormLabel>*Número</FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
@@ -559,7 +559,7 @@ export default function AdopterForm({
                           name={`addresses.${index}.neighborhood`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Bairro</FormLabel>
+                              <FormLabel>*Bairro</FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
@@ -577,7 +577,7 @@ export default function AdopterForm({
                           name={`addresses.${index}.city.stateUf.id`}
                           render={() => (
                             <FormItem>
-                              <FormLabel>Estado</FormLabel>
+                              <FormLabel>*Estado</FormLabel>
                               <Select
                                 onValueChange={(value) =>
                                   handleStateChange(index, value)
@@ -615,7 +615,7 @@ export default function AdopterForm({
                           name={`addresses.${index}.city.id`}
                           render={() => (
                             <FormItem className="md:col-span-2">
-                              <FormLabel>Cidade</FormLabel>
+                              <FormLabel>*Cidade</FormLabel>
                               <Select
                                 onValueChange={(value) =>
                                   handleCityChange(index, value)
