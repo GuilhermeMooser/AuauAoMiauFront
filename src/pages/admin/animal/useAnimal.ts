@@ -14,7 +14,7 @@ import {mutationErrorHandling} from "@/utils/errorHandling";
 import {PaginationUtils} from "@/utils/paginationUtils";
 import {useInfiniteQuery, useMutation} from "@tanstack/react-query";
 import {AxiosError} from "axios";
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 type ModalAction = "edit" | "view";
 
@@ -64,6 +64,13 @@ export const useAnimal = () => {
   };
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   const handleChangeFilter = (value: string) => {
     setSearchTerm(value);
   };
@@ -136,13 +143,11 @@ export const useAnimal = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
-    refetch,
   } = useInfiniteQuery({
-    queryKey: ["animals", searchTerm, activeFilters],
+    queryKey: ["animals", debouncedSearch, activeFilters],
     queryFn: async ({pageParam = 1}) => {
       const response = getAnimalsPaginated(
-        searchTerm,
+        debouncedSearch,
         activeFilters,
         pageParam,
         PaginationUtils.limit,
@@ -180,10 +185,10 @@ export const useAnimal = () => {
 
   const handleCreateSuccess = useCallback(
     (newAnimal: Animal) => {
-      const queryKey = ["animals", searchTerm, activeFilters];
+      const queryKey = ["animals", debouncedSearch, activeFilters];
       addItemOnScreen<Animal>(queryKey, newAnimal, false);
     },
-    [searchTerm, activeFilters, addItemOnScreen],
+    [debouncedSearch, activeFilters, addItemOnScreen],
   );
 
   const handleUpdateSuccess = useCallback(

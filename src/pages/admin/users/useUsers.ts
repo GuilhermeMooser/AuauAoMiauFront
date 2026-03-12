@@ -1,20 +1,20 @@
-import { GLOBAL_ERROR_HANDLERS } from "@/constants/errorHandlers";
-import { useError } from "@/hooks/useError";
-import { useModal } from "@/hooks/useModal";
-import { useQueryCachePagination } from "@/hooks/useQueryCachePagination";
-import { useQueryError } from "@/hooks/useQueryError";
-import { findUserById, getUsersPaginated } from "@/services/users";
-import { MinimalUser, User } from "@/types";
-import { mutationErrorHandling } from "@/utils/errorHandling";
-import { PaginationUtils } from "@/utils/paginationUtils";
-import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useCallback, useState } from "react";
+import {GLOBAL_ERROR_HANDLERS} from "@/constants/errorHandlers";
+import {useError} from "@/hooks/useError";
+import {useModal} from "@/hooks/useModal";
+import {useQueryCachePagination} from "@/hooks/useQueryCachePagination";
+import {useQueryError} from "@/hooks/useQueryError";
+import {findUserById, getUsersPaginated} from "@/services/users";
+import {MinimalUser, User} from "@/types";
+import {mutationErrorHandling} from "@/utils/errorHandling";
+import {PaginationUtils} from "@/utils/paginationUtils";
+import {useInfiniteQuery, useMutation} from "@tanstack/react-query";
+import {AxiosError} from "axios";
+import {useCallback, useEffect, useState} from "react";
 
 type ModalAction = "edit" | "view";
 
 export const useUsers = () => {
-  const { errorMessage, clearError, setErrorMessage } = useError();
+  const {errorMessage, clearError, setErrorMessage} = useError();
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
   const [pendingAction, setPendingAction] = useState<ModalAction | null>(null);
 
@@ -58,6 +58,12 @@ export const useUsers = () => {
 
   /** FilterInputSearch */
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const handleChangeFilter = (value: string) => {
     setSearchTerm(value);
@@ -70,20 +76,18 @@ export const useUsers = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
-    refetch,
   } = useInfiniteQuery({
-    queryKey: ["users", searchTerm],
-    queryFn: async ({ pageParam = 1 }) => {
+    queryKey: ["users", debouncedSearch],
+    queryFn: async ({pageParam = 1}) => {
       const response = getUsersPaginated(
-        searchTerm,
+        debouncedSearch,
         pageParam,
-        PaginationUtils.limit
+        PaginationUtils.limit,
       );
       return response;
     },
     getNextPageParam: (lastPage) => {
-      const { currentPage, totalPages } = lastPage.meta;
+      const {currentPage, totalPages} = lastPage.meta;
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     initialPageParam: 1,
@@ -102,8 +106,8 @@ export const useUsers = () => {
     clearErrorMessage: clearError,
     statusHandlers: [
       ...GLOBAL_ERROR_HANDLERS,
-      { statusCode: 401, message: "Acesso não autorizado." },
-      { statusCode: 404, message: "Os usuários não foram encontrados." },
+      {statusCode: 401, message: "Acesso não autorizado."},
+      {statusCode: 404, message: "Os usuários não foram encontrados."},
     ],
   });
 
@@ -118,7 +122,7 @@ export const useUsers = () => {
     getUserById(user.id);
   };
 
-  const { mutate: getUserById } = useMutation({
+  const {mutate: getUserById} = useMutation({
     mutationFn: async (id: string) => {
       return (await findUserById(id)).data;
     },
@@ -144,35 +148,35 @@ export const useUsers = () => {
             setErrorMessage("Usuário não encontrado");
             return true;
           }
-        }
+        },
       );
     },
   });
 
   /** Handlers */
-  const { addItemOnScreen, updateItemOnScreen, removeItemFromScreen } =
+  const {addItemOnScreen, updateItemOnScreen, removeItemFromScreen} =
     useQueryCachePagination();
 
   const handleCreateSuccess = useCallback(
     (newUser: User) => {
-      const queryKey = ["users", searchTerm];
+      const queryKey = ["users", debouncedSearch];
       addItemOnScreen<User>(queryKey, newUser, false);
     },
-    [searchTerm, addItemOnScreen]
+    [debouncedSearch, addItemOnScreen],
   );
 
   const handleUpdateSuccess = useCallback(
     (updatedUser: User) => {
       updateItemOnScreen<User>(["users"], updatedUser);
     },
-    [updateItemOnScreen]
+    [updateItemOnScreen],
   );
 
   const handleDeleteSuccess = useCallback(
     (deletedId: string) => {
       removeItemFromScreen<User>(["users"], deletedId);
     },
-    [removeItemFromScreen]
+    [removeItemFromScreen],
   );
 
   return {

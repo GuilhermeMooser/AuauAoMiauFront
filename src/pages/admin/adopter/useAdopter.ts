@@ -15,7 +15,7 @@ import { mutationErrorHandling } from "@/utils/errorHandling";
 import { PaginationUtils } from "@/utils/paginationUtils";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type ModalAction = "edit" | "view";
 
@@ -65,6 +65,13 @@ export const useAdopter = () => {
   };
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+  
   const handleChangeFilter = (value: string) => {
     setSearchTerm(value);
   };
@@ -139,10 +146,10 @@ export const useAdopter = () => {
     isLoading,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["adopters", searchTerm, activeFilters],
+    queryKey: ["adopters", debouncedSearch, activeFilters],
     queryFn: async ({ pageParam = 1 }) => {
       const response = getAdoptersPaginated(
-        searchTerm,
+        debouncedSearch,
         activeFilters,
         pageParam,
         PaginationUtils.limit
@@ -180,10 +187,10 @@ export const useAdopter = () => {
 
   const handleCreateSuccess = useCallback(
     (newAdopter: Adopter) => {
-      const queryKey = ["adopters", searchTerm, activeFilters];
+      const queryKey = ["adopters", debouncedSearch, activeFilters];
       addItemOnScreen<Adopter>(queryKey, newAdopter, false);
     },
-    [searchTerm, activeFilters, addItemOnScreen]
+    [debouncedSearch, activeFilters, addItemOnScreen]
   );
 
   const handleUpdateSuccess = useCallback(
