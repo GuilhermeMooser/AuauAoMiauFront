@@ -11,6 +11,7 @@ import {
   UpdateAnimalProcedureDispatcherDto,
 } from "./animalProcedures";
 import {MinimalAdopter} from "./adopter";
+import { Terms } from "./terms";
 
 export enum AnimalGender {
   Male = "M",
@@ -29,15 +30,15 @@ export type Animal = {
   dtOfRescue?: Date;
   dtOfAdoption?: Date;
   locationOfRescue?: string;
-  adopter?: MinimalAdopter; //Just for view
-  // terms?: TermOutput[]; //Just for view
+  adopter?: MinimalAdopter;
+  terms?: Terms[]; 
   type: AnimalType;
   size: string;
   gender: string;
   additionalInfo?: string;
   castrated?: boolean;
-  animalProcedures?: AnimalProcedures[]; //FALTA
-  expenses?: MinimalExpenses[]; //FALTA
+  animalProcedures?: AnimalProcedures[]; 
+  expenses?: MinimalExpenses[];
   audit: Audit;
 };
 

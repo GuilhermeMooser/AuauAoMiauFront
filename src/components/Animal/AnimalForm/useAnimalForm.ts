@@ -38,6 +38,9 @@ import {toast} from "@/hooks/use-toast";
 import {mutationErrorHandling} from "@/utils/errorHandling";
 import {mapAnimalToFormData} from "@/utils/animalMapper";
 import {CreateExpenseDto, UpdateExpenseDto} from "@/types/expenses";
+import {useNavigate} from "react-router-dom";
+import {Terms} from "@/types/terms";
+import { deleteTerm } from "@/services/terms";
 
 type Props = {
   animal: AnimalFormProps["animal"];
@@ -57,6 +60,7 @@ export const useAnimalForm = ({
   onUpdateSuccess,
 }: Props) => {
   const auth = getAuth();
+  const navigate = useNavigate();
 
   /** Form */
   const form = useForm<AnimalFormData>({
@@ -519,6 +523,45 @@ export const useAnimalForm = ({
     },
   });
 
+  const [selectedTermId, setSelectedTermId] = useState<string>("");
+  const {
+    isModalOpen: isModalDeleteTermOpen,
+    handleOpenModal: handleOpenDeleteTermModal,
+    handleCloseModal: handleCloseDeleteTerm,
+  } = useModal();
+
+  const handleDeleteTerm = (termId: string) => {
+    setSelectedTermId(termId);
+    handleOpenDeleteTermModal();
+  };
+  
+  const handleCloseDeleteTermModal = () => {
+    setSelectedTermId("");
+    handleCloseDeleteTerm();
+  };
+
+  const handleDeleteTermConfirm = () => {
+    if (!selectedTermId) return;
+    deleteTermMutation(selectedTermId);
+  }
+
+  const {mutate: deleteTermMutation} = useMutation({
+    mutationFn: async (id: string) => {
+      return (await deleteTerm(id)).data;
+    },
+    onSuccess: () => {
+      setSelectedTermId("");
+      handleCloseModal();
+    },
+    onError: (error) => {
+      mutationErrorHandling(
+        error,
+        "Falha ao excluir o termo de compromisso",
+        setErrorMessage,
+      );
+    },
+  });
+
   return {
     form,
     isReadOnly,
@@ -547,5 +590,10 @@ export const useAnimalForm = ({
     isModalDeleteAnimalOpen,
     handleCloseDeleteAnimalModal,
     handleDeleteAnimalConfirm,
+    navigate,
+    isModalDeleteTermOpen,
+    handleCloseDeleteTermModal,
+    handleDeleteTerm,
+    handleDeleteTermConfirm
   };
 };

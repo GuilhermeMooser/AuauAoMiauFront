@@ -17,11 +17,13 @@ import {
 import {
     CalendarDays,
     Coins,
+    FileText,
     Loader2,
     PawPrint,
     Plus,
     Stethoscope,
     Trash2,
+    UserRound,
 } from "lucide-react";
 import {
     Select,
@@ -86,7 +88,12 @@ export default function AnimalForm({
         clearError,
         isModalDeleteAnimalOpen,
         handleCloseDeleteAnimalModal,
-        handleDeleteAnimalConfirm
+        handleDeleteAnimalConfirm,
+        navigate,
+        isModalDeleteTermOpen,
+        handleDeleteTerm,
+        handleCloseDeleteTermModal,
+        handleDeleteTermConfirm
     } = useAnimalForm(
         {
             mode,
@@ -1236,6 +1243,79 @@ export default function AnimalForm({
                     </CardContent>
                 </Card>
 
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <UserRound className="h-5 w-5" />
+                            Adotante Vinculado
+                        </CardTitle>
+                        <CardDescription>Adotante associado a este animal</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {!animal?.adopter ? (
+                            <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                                Nenhum adotante vinculado.
+                            </p>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => navigate("/admin/adotantes")}
+                                className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer w-full sm:w-auto"
+                            >
+                                <span className="font-medium">{animal.adopter.name}</span>
+                                <span className="text-xs text-muted-foreground">{animal.adopter.cpf}</span>
+                            </button>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* ── Termos Vinculados ────────────────────────────────────── */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <FileText className="h-5 w-5" />
+                            Termos de Compromisso
+                        </CardTitle>
+                        <CardDescription>Termos associados a este animal</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {!animal?.terms?.length ? (
+                            <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                                Nenhum termo de compromisso vinculado.
+                            </p>
+                        ) : (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                {animal.terms.map((term, index) => (
+                                    <div key={term.id} className="relative group">
+                                        <button
+                                            type="button"
+                                            onClick={() => navigate("/admin/termos")}
+                                            className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer w-full"
+                                        >
+                                            <span className="font-medium">Termo {index + 1}</span>
+                                            <span className="text-xs text-muted-foreground truncate w-full pr-5">
+                                                {term.id}
+                                            </span>
+                                        </button>
+                                        {!isReadOnly && (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteTerm(term.id)
+                                                }}
+                                                className="absolute top-2 right-2 text-muted-foreground hover:text-red-500 transition-colors"
+                                            >
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
                 {/* ── Actions ─────────────────────────────────────────────── */}
                 <div className="flex justify-end space-x-4">
                     <Button type="button" variant="outline" onClick={handleCloseModal}>
@@ -1268,6 +1348,14 @@ export default function AnimalForm({
                 onNotConfirm={handleCloseDeleteAnimalModal}
                 onConfirm={handleDeleteAnimalConfirm}
                 content={"Deseja excluir este animal ?"}
+            />
+
+            <ConfirmModal
+                isOpen={isModalDeleteTermOpen}
+                onClose={handleCloseDeleteTermModal}
+                onNotConfirm={handleCloseDeleteTermModal}
+                onConfirm={handleDeleteTermConfirm}
+                content={"Deseja excluir este termo de compromisso ?"}
             />
         </>
     )
