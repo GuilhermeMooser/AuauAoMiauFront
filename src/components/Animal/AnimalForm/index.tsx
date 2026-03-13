@@ -62,8 +62,6 @@ export default function AnimalForm({
     onDeleteSuccess,
     onUpdateSuccess
 }: AnimalFormProps) {
-
-
     const {
         form,
         isReadOnly,
@@ -104,7 +102,7 @@ export default function AnimalForm({
             onUpdateSuccess
         }
     )
-
+    console.log(!animal?.adopter)
     return (
         <>
             <Form {...form}>
@@ -1252,7 +1250,7 @@ export default function AnimalForm({
                         <CardDescription>Adotante associado a este animal</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {!animal?.adopter ? (
+                        {!animal?.adopter || Object.keys(animal.adopter).length === 0 ? (
                             <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
                                 Nenhum adotante vinculado.
                             </p>
