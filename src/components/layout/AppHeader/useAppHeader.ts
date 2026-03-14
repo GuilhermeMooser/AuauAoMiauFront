@@ -1,10 +1,11 @@
-import { toast } from "@/hooks/use-toast";
-import { useError } from "@/hooks/useError";
-import { useModal } from "@/hooks/useModal";
-import { logout } from "@/services/auth";
-import { getAuth } from "@/utils/auth";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import {toast} from "@/hooks/use-toast";
+import {useError} from "@/hooks/useError";
+import {useModal} from "@/hooks/useModal";
+import {useNotificationBell} from "@/hooks/useNotification";
+import {logout} from "@/services/auth";
+import {getAuth} from "@/utils/auth";
+import {useMutation} from "@tanstack/react-query";
+import {useNavigate} from "react-router-dom";
 
 export const useAppHeader = () => {
   const navigate = useNavigate();
@@ -19,8 +20,8 @@ export const useAppHeader = () => {
       .slice(0, 2);
   };
 
-  const { isModalOpen, handleOpenModal, handleCloseModal } = useModal();
-  const { errorMessage, clearError, setErrorMessage } = useError();
+  const {isModalOpen, handleOpenModal, handleCloseModal} = useModal();
+  const {errorMessage, clearError, setErrorMessage} = useError();
 
   const handleLogout = () => {
     handleOpenModal();
@@ -30,7 +31,7 @@ export const useAppHeader = () => {
     logoutMutation();
   };
 
-  const { mutate: logoutMutation } = useMutation({
+  const {mutate: logoutMutation} = useMutation({
     mutationFn: logout,
 
     onSuccess: () => {
@@ -49,6 +50,12 @@ export const useAppHeader = () => {
     },
   });
 
+  /**
+   * Notification
+   */
+  const {pending, open, setOpen, clearAll, dismissOne, loading} =
+    useNotificationBell();
+
   return {
     auth,
     isModalOpen,
@@ -58,5 +65,13 @@ export const useAppHeader = () => {
     handleCloseModal,
     getInitials,
     handleLogout,
+    notifications: {
+      pending,
+      open,
+      setOpen,
+      clearAll,
+      dismissOne,
+      loading,
+    },
   };
 };
