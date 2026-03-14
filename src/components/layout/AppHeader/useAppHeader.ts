@@ -58,16 +58,15 @@ export const useAppHeader = () => {
     useNotificationBell();
 
   const handleWhatsappSend = (phone: string) => {
-    console.log(phone)
+    console.log(phone);
     const message = "Olá, como está o animal adotado ?";
     const encodedMessage = encodeURIComponent(message);
 
     const phoneNumber = phone && formatPhoneNumber(phone);
     const cleanPhone = phoneNumber?.replace(/\D/g, "");
 
-    const whatsAppUrl = cleanPhone
-      ? `https://wa.me/55${cleanPhone}?text=${encodedMessage}`
-      : `https://wa.me/?text=${encodedMessage}`;
+    const whatsAppUrl =
+      cleanPhone && `https://wa.me/55${cleanPhone}?text=${encodedMessage}`;
 
     window.open(whatsAppUrl, "_blank");
   };
