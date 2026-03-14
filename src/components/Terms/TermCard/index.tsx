@@ -172,7 +172,7 @@ export default function TermCard({ term, handleEditClick, handleViewTerm }: Term
 
                     {/* Actions */}
                     <div className="flex flex-col sm:flex-row gap-2 pt-2 mt-auto">
-                        <Button variant="outline" size="sm" className="flex-1" onClick={() => { }}>
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => { }} disabled={true}>
                             <FileText className="h-3 w-3 sm:mr-1" />
                             <span className="hidden sm:inline ml-1">Ver PDF</span>
                         </Button>
