@@ -19,6 +19,7 @@ import {
 import { useAppHeader } from "./useAppHeader";
 import ConfirmModal from "@/components/ConfirmModal";
 import Alert from "@/components/Alert";
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 export default function AppHeader() {
   const {
@@ -31,6 +32,7 @@ export default function AppHeader() {
     handleLogout,
     getInitials,
     notifications,
+    handleWhatsappSend
   } = useAppHeader();
 
   const { pending, open, setOpen, clearAll, dismissOne, loading } = notifications;
@@ -125,19 +127,31 @@ export default function AppHeader() {
             <ul className="divide-y divide-border max-h-96 overflow-y-auto">
               {pending.map(a => (
                 <li key={a.id} className="flex items-center justify-between py-3">
-                  <div>
-                    <p className="text-sm font-medium">{a.name}</p>
+                  <div className="w-full pr-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">{a.name}</p>
+
+                      <button
+                        onClick={() => handleWhatsappSend(a.phone)}
+                        className="text-green-500 hover:text-green-400 transition-colors"
+                      >
+                        <WhatsAppIcon className="text-base" />
+                      </button>
+                    </div>
+
                     <p className="text-xs text-muted-foreground">
                       <span className="text-xs text-white">Email:</span> {a.email}
                     </p>
+
                     <p className="text-xs text-muted-foreground">
                       <span className="text-xs text-white">Telefone Principal:</span> {a.phone}
                     </p>
                   </div>
+
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-muted-foreground hover:text-destructive"
+                    className="text-muted-foreground hover:text-destructive mb-6"
                     onClick={() => dismissOne(a.id)}
                   >
                     <X className="h-4 w-4" />

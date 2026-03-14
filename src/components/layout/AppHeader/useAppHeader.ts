@@ -4,6 +4,7 @@ import {useModal} from "@/hooks/useModal";
 import {useNotificationBell} from "@/hooks/useNotification";
 import {logout} from "@/services/auth";
 import {getAuth} from "@/utils/auth";
+import {formatPhoneNumber} from "@/utils/format";
 import {useMutation} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 
@@ -56,6 +57,21 @@ export const useAppHeader = () => {
   const {pending, open, setOpen, clearAll, dismissOne, loading} =
     useNotificationBell();
 
+  const handleWhatsappSend = (phone: string) => {
+    console.log(phone)
+    const message = "Olá, como está o animal adotado ?";
+    const encodedMessage = encodeURIComponent(message);
+
+    const phoneNumber = phone && formatPhoneNumber(phone);
+    const cleanPhone = phoneNumber?.replace(/\D/g, "");
+
+    const whatsAppUrl = cleanPhone
+      ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
+      : `https://wa.me/?text=${encodedMessage}`;
+
+    window.open(whatsAppUrl, "_blank");
+  };
+
   return {
     auth,
     isModalOpen,
@@ -73,5 +89,6 @@ export const useAppHeader = () => {
       dismissOne,
       loading,
     },
+    handleWhatsappSend,
   };
 };
