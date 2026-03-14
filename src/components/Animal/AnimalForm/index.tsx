@@ -102,7 +102,6 @@ export default function AnimalForm({
             onUpdateSuccess
         }
     )
-    console.log(!animal?.adopter)
     return (
         <>
             <Form {...form}>
@@ -1133,7 +1132,7 @@ export default function AnimalForm({
                                                                                         <Badge variant="outline" className="text-xs">
                                                                                             Gasto {expIdx + 1}
                                                                                         </Badge>
-                                                                                        {!isReadOnly && (
+                                                                                        {!isReadOnly && canExcludeAnimal && (
                                                                                             <Button
                                                                                                 type="button"
                                                                                                 variant="ghost"
@@ -1295,7 +1294,7 @@ export default function AnimalForm({
                                                 {term.id}
                                             </span>
                                         </button>
-                                        {!isReadOnly && (
+                                        {!isReadOnly && canExcludeAnimal && (
                                             <button
                                                 type="button"
                                                 onClick={(e) => {

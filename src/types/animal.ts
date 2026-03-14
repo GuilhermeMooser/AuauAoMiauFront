@@ -11,7 +11,7 @@ import {
   UpdateAnimalProcedureDispatcherDto,
 } from "./animalProcedures";
 import {MinimalAdopter} from "./adopter";
-import { Terms } from "./terms";
+import {Terms} from "./terms";
 
 export enum AnimalGender {
   Male = "M",
@@ -31,13 +31,13 @@ export type Animal = {
   dtOfAdoption?: Date;
   locationOfRescue?: string;
   adopter?: MinimalAdopter;
-  terms?: Terms[]; 
+  terms?: Terms[];
   type: AnimalType;
   size: string;
   gender: string;
   additionalInfo?: string;
   castrated?: boolean;
-  animalProcedures?: AnimalProcedures[]; 
+  animalProcedures?: AnimalProcedures[];
   expenses?: MinimalExpenses[];
   audit: Audit;
 };
@@ -61,6 +61,7 @@ export type MinimalAnimal = {
   gender: string;
   castrated?: boolean;
   audit: Audit;
+  terms: Terms[];
 };
 
 export type FindAllAnimalsPaginated = Pagination<MinimalAnimal>;
@@ -95,7 +96,10 @@ export type UpdateAnimalDto = Omit<
 > & {
   id: string;
   expenses: (CreateExpenseDto | UpdateExpenseDto)[];
-  animalProcedures: (CreateAnimalProcedureDispatcherDto | UpdateAnimalProcedureDispatcherDto)[];
+  animalProcedures: (
+    | CreateAnimalProcedureDispatcherDto
+    | UpdateAnimalProcedureDispatcherDto
+  )[];
 };
 
 export const procedureConfig = {

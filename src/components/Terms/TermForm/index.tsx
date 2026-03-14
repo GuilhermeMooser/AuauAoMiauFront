@@ -5,7 +5,6 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form";
 import {
@@ -18,7 +17,6 @@ import {
 import {
     ChevronLeft,
     ChevronRight,
-    FileText,
     Loader2,
     PawPrint,
     Plus,
@@ -31,7 +29,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Alert from "@/components/Alert";
 import ConfirmModal from "@/components/ConfirmModal";
-import { Navigate } from "react-router-dom";
 
 export type TermFormProps = {
     term?: Terms;
@@ -65,8 +62,6 @@ export default function TermForm({
         isModalDeleteTermOpen,
         handleCloseDeleteTermModal,
         handleDeleteTermConfirm,
-
-        // Animal search
         searchTermAnimal,
         setSearchTermAnimal,
         animalsData,
@@ -74,8 +69,6 @@ export default function TermForm({
         animalPage,
         setAnimalPage,
         animalTotalPages,
-
-        // Adopter search
         searchTermAdopter,
         setSearchTermAdopter,
         adoptersData,
@@ -95,10 +88,20 @@ export default function TermForm({
     const selectedAnimalId = form.watch("animalId");
     const selectedAdopterId = form.watch("adopterId");
 
+    const isExisting = !!term;
+
     return (
         <>
             <Form {...form}>
                 {/* ── Animal ──────────────────────────────────────────────── */}
+                {canExcludeTerm && (
+                    <div
+                        className="transition hover:text-red-500 cursor-pointer flex justify-end"
+                        onClick={handleDeleteTerm}
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </div>
+                )}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center justify-between gap-2">
@@ -106,144 +109,170 @@ export default function TermForm({
                                 <PawPrint className="h-5 w-5" />
                                 Animal
                             </div>
-                            {
-                                !isReadOnly && (
-                                    <button className="border-2 p-1 rounded-sm hover:border-primary/60 hover:bg-muted/40"
-                                        onClick={() => navigate("/admin/animais")}>
-                                        <Plus />
-                                    </button>
-                                )
-                            }
+                            {!isReadOnly && !isExisting && (
+                                <button
+                                    type="button"
+                                    className="border-2 p-1 rounded-sm hover:border-primary/60 hover:bg-muted/40"
+                                    onClick={() => navigate("/admin/animais")}
+                                >
+                                    <Plus className="h-4 w-4" />
+                                </button>
+                            )}
                         </CardTitle>
                         <CardDescription>
-                            Pesquise e selecione o animal para o termo de compromisso
+                            {isExisting
+                                ? "Animal vinculado a este termo"
+                                : "Pesquise e selecione o animal para o termo de compromisso"}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {/* Search input */}
-                        {!isReadOnly && (
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    className="pl-9"
-                                    placeholder="Pesquisar animal pelo nome..."
-                                    value={searchTermAnimal}
-                                    onChange={(e) => {
-                                        setSearchTermAnimal(e.target.value);
-                                        setAnimalPage(1);
-                                    }}
-                                    disabled={isReadOnly}
-                                />
-                            </div>
-                        )}
-
-                        {/* Hidden form field */}
-                        <FormField
-                            control={form.control}
-                            name="animalId"
-                            render={({ field }) => (
-                                <FormItem className="hidden">
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Animal list */}
-                        {animalIsLoading ? (
-                            <div className="flex justify-center py-6">
-                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                            </div>
-                        ) : animalsData.items.length === 0 ? (
-                            <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
-                                Nenhum animal encontrado.
-                            </p>
+                        {isExisting ? (
+                            <button
+                                type="button"
+                                onClick={() => navigate("/admin/animais")}
+                                className="flex flex-col items-start gap-1 rounded-lg border border-primary bg-primary/10 ring-1 ring-primary p-3 text-left text-sm w-full sm:w-auto hover:bg-primary/20 transition-all cursor-pointer"
+                            >
+                                <div className="flex items-center justify-between w-full gap-2">
+                                    <span className="font-medium">{term.animal.name}</span>
+                                    <Badge variant="default" className="text-[10px] px-1.5 py-0 shrink-0">
+                                        Vinculado
+                                    </Badge>
+                                </div>
+                                {term.animal.breed && (
+                                    <span className="text-xs text-muted-foreground">
+                                        {term.animal.breed}
+                                    </span>
+                                )}
+                                <div className="flex flex-wrap gap-1 mt-0.5">
+                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                        {term.animal.gender === "M" ? "Macho" : "Fêmea"}
+                                    </Badge>
+                                    {term.animal.age != null && (
+                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                            {term.animal.age} {term.animal.age === 1 ? "ano" : "anos"}
+                                        </Badge>
+                                    )}
+                                    {term.animal.castrated && (
+                                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                            Castrado
+                                        </Badge>
+                                    )}
+                                    {term.animal.dtOfAdoption && (
+                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                            Adotado em {new Date(term.animal.dtOfAdoption).toLocaleDateString("pt-BR")}
+                                        </Badge>
+                                    )}
+                                </div>
+                            </button>
                         ) : (
-                            <div className="space-y-3">
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                    {animalsData.items.map((animal) => {
-                                        const isSelected = selectedAnimalId === animal.id;
-                                        return (
-                                            <button
-                                                key={animal.id}
-                                                type="button"
-                                                disabled={isReadOnly}
-                                                onClick={() => {
-                                                    if (!isReadOnly) {
-                                                        form.setValue("animalId", animal.id, { shouldValidate: true });
-                                                    }
-                                                }}
-                                                className={`relative flex flex-col items-start gap-1 rounded-lg border p-3 text-left text-sm transition-all
-                                                    ${isReadOnly ? "cursor-default" : "cursor-pointer hover:border-primary/60 hover:bg-muted/40"}
-                                                    ${isSelected
-                                                        ? "border-primary bg-primary/10 ring-1 ring-primary"
-                                                        : "border-border bg-background"
-                                                    }`}
-                                            >
-                                                <div className="flex w-full items-center justify-between gap-1">
-                                                    <span className="font-medium truncate">{animal.name}</span>
-                                                    {isSelected && (
-                                                        <Badge variant="default" className="text-[10px] px-1.5 py-0 shrink-0">
-                                                            Selecionado
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                                {animal.breed && (
-                                                    <span className="text-xs text-muted-foreground truncate w-full">
-                                                        {animal.breed}
-                                                    </span>
-                                                )}
-                                                {/* {animal.type && (
-                                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 mt-0.5">
-                                                        {animal.type}
-                                                    </Badge>
-                                                )} */}
-                                            </button>
-                                        );
-                                    })}
+                            <>
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        className="pl-9"
+                                        placeholder="Pesquisar animal pelo nome..."
+                                        value={searchTermAnimal}
+                                        onChange={(e) => {
+                                            setSearchTermAnimal(e.target.value);
+                                            setAnimalPage(1);
+                                        }}
+                                    />
                                 </div>
 
-                                {/* Animal Pagination */}
-                                {animalTotalPages > 1 && (
-                                    <div className="flex items-center justify-between pt-1">
-                                        <span className="text-xs text-muted-foreground">
-                                            Página {animalPage} de {animalTotalPages}
-                                        </span>
-                                        <div className="flex items-center gap-1">
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="icon"
-                                                className="h-7 w-7"
-                                                disabled={animalPage <= 1}
-                                                onClick={() => setAnimalPage((p) => Math.max(1, p - 1))}
-                                            >
-                                                <ChevronLeft className="h-3.5 w-3.5" />
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="icon"
-                                                className="h-7 w-7"
-                                                disabled={animalPage >= animalTotalPages}
-                                                onClick={() => setAnimalPage((p) => Math.min(animalTotalPages, p + 1))}
-                                            >
-                                                <ChevronRight className="h-3.5 w-3.5" />
-                                            </Button>
+                                <FormField
+                                    control={form.control}
+                                    name="animalId"
+                                    render={({ field }) => (
+                                        <FormItem className="hidden">
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {animalIsLoading ? (
+                                    <div className="flex justify-center py-6">
+                                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : animalsData.items.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                                        Nenhum animal encontrado.
+                                    </p>
+                                ) : (
+                                    <div className="space-y-3">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                            {animalsData.items.map((animal) => {
+                                                const isSelected = selectedAnimalId === animal.id;
+                                                const hasTerm = (animal.terms?.length ?? 0) > 0;
+
+                                                return (
+                                                    <button
+                                                        key={animal.id}
+                                                        type="button"
+                                                        disabled={hasTerm}
+                                                        onClick={() => {
+                                                            if (!hasTerm) form.setValue("animalId", animal.id, { shouldValidate: true });
+                                                        }}
+                                                        className={`relative flex flex-col items-start gap-1 rounded-lg border p-3 text-left text-sm transition-all
+                                                            ${hasTerm
+                                                                ? "border-border bg-muted/30 opacity-50 cursor-not-allowed"
+                                                                : isSelected
+                                                                    ? "border-primary bg-primary/10 ring-1 ring-primary cursor-pointer hover:border-primary/60 hover:bg-muted/40"
+                                                                    : "border-border bg-background cursor-pointer hover:border-primary/60 hover:bg-muted/40"
+                                                            }`}
+                                                    >
+                                                        <div className="flex w-full items-center justify-between gap-1">
+                                                            <span className="font-medium truncate">{animal.name}</span>
+                                                            {hasTerm ? (
+                                                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
+                                                                    Indisponível
+                                                                </Badge>
+                                                            ) : isSelected && (
+                                                                <Badge variant="default" className="text-[10px] px-1.5 py-0 shrink-0">
+                                                                    Selecionado
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                        {animal.breed && (
+                                                            <span className="text-xs text-muted-foreground truncate w-full">
+                                                                {animal.breed}
+                                                            </span>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
+
+                                        {animalTotalPages > 1 && (
+                                            <div className="flex items-center justify-between pt-1">
+                                                <span className="text-xs text-muted-foreground">
+                                                    Página {animalPage} de {animalTotalPages}
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <Button type="button" variant="outline" size="icon" className="h-7 w-7"
+                                                        disabled={animalPage <= 1}
+                                                        onClick={() => setAnimalPage((p) => Math.max(1, p - 1))}>
+                                                        <ChevronLeft className="h-3.5 w-3.5" />
+                                                    </Button>
+                                                    <Button type="button" variant="outline" size="icon" className="h-7 w-7"
+                                                        disabled={animalPage >= animalTotalPages}
+                                                        onClick={() => setAnimalPage((p) => Math.min(animalTotalPages, p + 1))}>
+                                                        <ChevronRight className="h-3.5 w-3.5" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
-                            </div>
-                        )}
 
-                        {/* Validation error message */}
-                        <FormField
-                            control={form.control}
-                            name="animalId"
-                            render={() => <FormMessage />}
-                        />
+                                <FormField
+                                    control={form.control}
+                                    name="animalId"
+                                    render={() => <FormMessage />}
+                                />
+                            </>
+                        )}
                     </CardContent>
                 </Card>
 
@@ -255,144 +284,144 @@ export default function TermForm({
                                 <UserRound className="h-5 w-5" />
                                 Adotante
                             </div>
-                            {
-                                !isReadOnly && (
-                                    <button className="border-2 p-1 rounded-sm hover:border-primary/60 hover:bg-muted/40"
-                                        onClick={() => navigate("/admin/adotantes")}>
-                                        <Plus />
-                                    </button>
-                                )
-                            }
+                            {!isReadOnly && !isExisting && (
+                                <button
+                                    type="button"
+                                    className="border-2 p-1 rounded-sm hover:border-primary/60 hover:bg-muted/40"
+                                    onClick={() => navigate("/admin/adotantes")}
+                                >
+                                    <Plus className="h-4 w-4" />
+                                </button>
+                            )}
                         </CardTitle>
                         <CardDescription>
-                            Pesquise e selecione o adotante para o termo de compromisso
+                            {isExisting
+                                ? "Adotante vinculado a este termo"
+                                : "Pesquise e selecione o adotante para o termo de compromisso"}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {/* Search input */}
-                        {!isReadOnly && (
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    className="pl-9"
-                                    placeholder="Pesquisar adotante pelo nome..."
-                                    value={searchTermAdopter}
-                                    onChange={(e) => {
-                                        setSearchTermAdopter(e.target.value);
-                                        setAdopterPage(1);
-                                    }}
-                                    disabled={isReadOnly}
-                                />
-                            </div>
-                        )}
-
-                        {/* Hidden form field */}
-                        <FormField
-                            control={form.control}
-                            name="adopterId"
-                            render={({ field }) => (
-                                <FormItem className="hidden">
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Adopter list */}
-                        {adopterIsLoading ? (
-                            <div className="flex justify-center py-6">
-                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                            </div>
-                        ) : adoptersData.items.length === 0 ? (
-                            <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
-                                Nenhum adotante encontrado.
-                            </p>
+                        {isExisting ? (
+                            <button
+                                type="button"
+                                onClick={() => navigate("/admin/adotantes")}
+                                className="flex flex-col items-start gap-1 rounded-lg border border-primary bg-primary/10 ring-1 ring-primary p-3 text-left text-sm w-full sm:w-auto hover:bg-primary/20 transition-all cursor-pointer"
+                            >
+                                <div className="flex items-center justify-between w-full gap-2">
+                                    <span className="font-medium">{term.adopter.name}</span>
+                                    <Badge variant="default" className="text-[10px] px-1.5 py-0 shrink-0">
+                                        Vinculado
+                                    </Badge>
+                                </div>
+                                <span className="text-xs text-muted-foreground">
+                                    CPF: {term.adopter.cpf}
+                                </span>
+                                {term.adopter.email && (
+                                    <span className="text-xs text-muted-foreground">
+                                        {term.adopter.email}
+                                    </span>
+                                )}
+                            </button>
                         ) : (
-                            <div className="space-y-3">
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                    {adoptersData.items.map((adopter) => {
-                                        const isSelected = selectedAdopterId === adopter.id;
-                                        return (
-                                            <button
-                                                key={adopter.id}
-                                                type="button"
-                                                disabled={isReadOnly}
-                                                onClick={() => {
-                                                    if (!isReadOnly) {
-                                                        form.setValue("adopterId", adopter.id, { shouldValidate: true });
-                                                    }
-                                                }}
-                                                className={`relative flex flex-col items-start gap-1 rounded-lg border p-3 text-left text-sm transition-all
-                                                    ${isReadOnly ? "cursor-default" : "cursor-pointer hover:border-primary/60 hover:bg-muted/40"}
-                                                    ${isSelected
-                                                        ? "border-primary bg-primary/10 ring-1 ring-primary"
-                                                        : "border-border bg-background"
-                                                    }`}
-                                            >
-                                                <div className="flex w-full items-center justify-between gap-1">
-                                                    <span className="font-medium truncate">{adopter.name}</span>
-                                                    {isSelected && (
-                                                        <Badge variant="default" className="text-[10px] px-1.5 py-0 shrink-0">
-                                                            Selecionado
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                                {adopter.email && (
-                                                    <span className="text-xs text-muted-foreground truncate w-full">
-                                                        {adopter.email}
-                                                    </span>
-                                                )}
-                                                {/* {adopter.phone && (
-                                                    <span className="text-xs text-muted-foreground truncate w-full">
-                                                        {adopter.phone}
-                                                    </span>
-                                                )} */}
-                                            </button>
-                                        );
-                                    })}
+                            <>
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        className="pl-9"
+                                        placeholder="Pesquisar adotante pelo nome..."
+                                        value={searchTermAdopter}
+                                        onChange={(e) => {
+                                            setSearchTermAdopter(e.target.value);
+                                            setAdopterPage(1);
+                                        }}
+                                    />
                                 </div>
 
-                                {/* Adopter Pagination */}
-                                {adopterTotalPages > 1 && (
-                                    <div className="flex items-center justify-between pt-1">
-                                        <span className="text-xs text-muted-foreground">
-                                            Página {adopterPage} de {adopterTotalPages}
-                                        </span>
-                                        <div className="flex items-center gap-1">
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="icon"
-                                                className="h-7 w-7"
-                                                disabled={adopterPage <= 1}
-                                                onClick={() => setAdopterPage((p) => Math.max(1, p - 1))}
-                                            >
-                                                <ChevronLeft className="h-3.5 w-3.5" />
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="icon"
-                                                className="h-7 w-7"
-                                                disabled={adopterPage >= adopterTotalPages}
-                                                onClick={() => setAdopterPage((p) => Math.min(adopterTotalPages, p + 1))}
-                                            >
-                                                <ChevronRight className="h-3.5 w-3.5" />
-                                            </Button>
+                                <FormField
+                                    control={form.control}
+                                    name="adopterId"
+                                    render={({ field }) => (
+                                        <FormItem className="hidden">
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {adopterIsLoading ? (
+                                    <div className="flex justify-center py-6">
+                                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : adoptersData.items.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                                        Nenhum adotante encontrado.
+                                    </p>
+                                ) : (
+                                    <div className="space-y-3">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                            {adoptersData.items.map((adopter) => {
+                                                const isSelected = selectedAdopterId === adopter.id;
+                                                return (
+                                                    <button
+                                                        key={adopter.id}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            form.setValue("adopterId", adopter.id, { shouldValidate: true })
+                                                        }
+                                                        className={`relative flex flex-col items-start gap-1 rounded-lg border p-3 text-left text-sm transition-all cursor-pointer hover:border-primary/60 hover:bg-muted/40
+                                                            ${isSelected
+                                                                ? "border-primary bg-primary/10 ring-1 ring-primary"
+                                                                : "border-border bg-background"
+                                                            }`}
+                                                    >
+                                                        <div className="flex w-full items-center justify-between gap-1">
+                                                            <span className="font-medium truncate">{adopter.name}</span>
+                                                            {isSelected && (
+                                                                <Badge variant="default" className="text-[10px] px-1.5 py-0 shrink-0">
+                                                                    Selecionado
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                        {adopter.email && (
+                                                            <span className="text-xs text-muted-foreground truncate w-full">
+                                                                {adopter.email}
+                                                            </span>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
+
+                                        {adopterTotalPages > 1 && (
+                                            <div className="flex items-center justify-between pt-1">
+                                                <span className="text-xs text-muted-foreground">
+                                                    Página {adopterPage} de {adopterTotalPages}
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <Button type="button" variant="outline" size="icon" className="h-7 w-7"
+                                                        disabled={adopterPage <= 1}
+                                                        onClick={() => setAdopterPage((p) => Math.max(1, p - 1))}>
+                                                        <ChevronLeft className="h-3.5 w-3.5" />
+                                                    </Button>
+                                                    <Button type="button" variant="outline" size="icon" className="h-7 w-7"
+                                                        disabled={adopterPage >= adopterTotalPages}
+                                                        onClick={() => setAdopterPage((p) => Math.min(adopterTotalPages, p + 1))}>
+                                                        <ChevronRight className="h-3.5 w-3.5" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
-                            </div>
-                        )}
 
-                        {/* Validation error message */}
-                        <FormField
-                            control={form.control}
-                            name="adopterId"
-                            render={() => <FormMessage />}
-                        />
+                                <FormField
+                                    control={form.control}
+                                    name="adopterId"
+                                    render={() => <FormMessage />}
+                                />
+                            </>
+                        )}
                     </CardContent>
                 </Card>
 

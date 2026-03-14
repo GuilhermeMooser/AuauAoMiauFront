@@ -15,7 +15,7 @@ import {toast} from "@/hooks/use-toast";
 import {Role} from "@/constants/roles";
 import {useModal} from "@/hooks/useModal";
 import {useMutation, useQuery} from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const PAGE_SIZE = 6;
 
@@ -38,7 +38,7 @@ export const useTermForm = ({
 }: Props) => {
   const auth = getAuth();
   const navigate = useNavigate();
-  
+
   const form = useForm<TermFormData>({
     resolver: zodResolver(termSchema),
     defaultValues: {
@@ -89,6 +89,7 @@ export const useTermForm = ({
         PAGE_SIZE,
       ),
     staleTime: 0,
+    enabled: !term,
   });
 
   const animalsData = {
@@ -108,6 +109,7 @@ export const useTermForm = ({
         PAGE_SIZE,
       ),
     staleTime: 0,
+    enabled: !term,
   });
 
   const adoptersData = {
@@ -160,7 +162,7 @@ export const useTermForm = ({
   };
 
   /** Delete Term */
-  const canExcludeTerm = mode === "edit" && auth?.user.role.name === Role.Admin;
+  const canExcludeTerm = mode === "view" && auth?.user.role.name === Role.Admin;
 
   const {
     isModalOpen: isModalDeleteTermOpen,

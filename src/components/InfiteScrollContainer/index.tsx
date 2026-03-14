@@ -26,7 +26,6 @@ export function InfiniteScrollContainer({
         const entry = entries[0];
         
         if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          console.log('🔄 Carregando próxima página...');
           fetchNextPage();
         }
       },

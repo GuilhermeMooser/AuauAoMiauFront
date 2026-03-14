@@ -110,7 +110,6 @@ export const useUserForm = ({
       handleCloseModal();
     },
     onError: (error) => {
-      console.log(error);
       mutationErrorHandling(
         error,
         "Falha ao excluir o usuário",
@@ -192,7 +191,6 @@ export const useUserForm = ({
     },
     onError: (error) => {
       setSubmitting(false);
-      console.log(error);
       mutationErrorHandling(error, "Falha ao criar usuário", setErrorMessage);
     },
   });

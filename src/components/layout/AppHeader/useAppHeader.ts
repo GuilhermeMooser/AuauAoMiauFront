@@ -58,7 +58,6 @@ export const useAppHeader = () => {
     useNotificationBell();
 
   const handleWhatsappSend = (phone: string) => {
-    console.log(phone);
     const message = "Olá, como está o animal adotado ?";
     const encodedMessage = encodeURIComponent(message);
 

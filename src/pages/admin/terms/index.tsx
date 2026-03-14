@@ -155,6 +155,7 @@ export default function Terms() {
                             mode="view"
                             term={selectedTerm}
                             onCancel={handleCloseViewModalFn}
+                            onDeleteSuccess={handleDeleteSuccess}
                         />
                     </DialogContent>
                 </Dialog>
