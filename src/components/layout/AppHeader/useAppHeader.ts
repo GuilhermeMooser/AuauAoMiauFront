@@ -66,7 +66,7 @@ export const useAppHeader = () => {
     const cleanPhone = phoneNumber?.replace(/\D/g, "");
 
     const whatsAppUrl = cleanPhone
-      ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
+      ? `https://wa.me/55${cleanPhone}?text=${encodedMessage}`
       : `https://wa.me/?text=${encodedMessage}`;
 
     window.open(whatsAppUrl, "_blank");
