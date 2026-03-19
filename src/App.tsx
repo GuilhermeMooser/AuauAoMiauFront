@@ -21,8 +21,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Public Routes */}
-          {/* Redirect root to login */}
           <Route path="/login" element={<Login />} />
 
           <Route
@@ -33,21 +31,6 @@ const App = () => (
                 : <Navigate to="/login" replace />
             }
           />
-
-          {/* Redirect root to dashboard */}
-          {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
-
-          {/* Routes - Authentication disabled for development */}
-          {/* <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Dashboard />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          /> */}
 
           <Route
             path="/admin/animais"
@@ -81,25 +64,6 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-
-          {/* Admin routes */}
-          {/* <Route
-            path="/admin/contabilidade"
-            element={
-              <ProtectedRoute requiredRole={"Administrador"}>
-                <DashboardLayout>
-                  <div className="p-6">
-                    <h1 className="text-3xl font-bold text-foreground">
-                      Contabilidade
-                    </h1>
-                    <p className="text-muted-foreground">
-                      Módulo em desenvolvimento...
-                    </p>
-                  </div>
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          /> */}
 
           <Route
             path="/admin/usuarios"
