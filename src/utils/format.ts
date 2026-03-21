@@ -67,3 +67,14 @@ export const formatCep = (cep: string) => {
 
   return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
 };
+
+export const formatPrice = (value: number) => {
+  const formattedValue = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+
+  return formattedValue;
+};

@@ -44,6 +44,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Animal, procedureConfig, ProcedureType } from "@/types/animal";
 import { Textarea } from "@/components/ui/textarea";
 import { AnimalProcedureEnum } from "@/types/animalProcedures";
+import { formatPrice } from "@/utils/format";
 
 export type AnimalFormProps = {
     animal?: Animal;
@@ -103,9 +104,28 @@ export default function AnimalForm({
             onUpdateSuccess
         }
     )
+
     return (
         <>
             <Form {...form}>
+                {
+                    !isCreateMode && !!animal?.totalCost && (
+                        <>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <PawPrint className="h-5 w-5" />
+                                            Total Gasto
+                                        </div>
+                                        <div>{formatPrice(animal.totalCost)}</div>
+                                    </CardTitle>
+                                </CardHeader>
+                            </Card>
+                        </>
+                    )
+                }
+
                 {/* ── Informações Básicas ──────────────────────────────────── */}
                 <Card>
                     <CardHeader>

@@ -149,9 +149,10 @@
 import { AnimalGender, MinimalAnimal } from "@/types/animal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Eye, Heart, ShieldCheck, Scissors, PawPrint, CalendarDays, FileText } from "lucide-react";
+import { Edit, Eye, Heart, ShieldCheck, Scissors, PawPrint, CalendarDays, FileText, Coins } from "lucide-react";
 import { formatDate } from "@/utils/formatDate";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/utils/format";
 
 export type AnimalCardProps = {
     animal: MinimalAnimal;
@@ -230,6 +231,17 @@ export default function AnimalCard({
                                 <Scissors className="h-3 w-3" />
                                 Castrado
                             </Badge>
+                        )}
+                    </div>
+
+                    {/* Total Cost */}
+                    <div className="space-y-1 text-sm flex-shrink-0">
+                        {animal.totalCost && (
+                            <div className="flex items-center gap-2">
+                                <Coins className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                <span className="text-muted-foreground">Total gasto:</span>
+                                <span className="text-foreground">{formatPrice(animal.totalCost)}</span>
+                            </div>
                         )}
                     </div>
 

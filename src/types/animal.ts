@@ -40,6 +40,7 @@ export type Animal = {
   animalProcedures?: AnimalProcedures[];
   expenses?: MinimalExpenses[];
   audit: Audit;
+  totalCost?: number;
 };
 
 export type AnimalFilters = {
@@ -62,6 +63,7 @@ export type MinimalAnimal = {
   castrated?: boolean;
   audit: Audit;
   terms: Terms[];
+  totalCost: number;
 };
 
 export type FindAllAnimalsPaginated = Pagination<MinimalAnimal>;

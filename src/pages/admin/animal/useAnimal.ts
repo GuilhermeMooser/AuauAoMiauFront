@@ -193,10 +193,21 @@ export const useAnimal = () => {
 
   const handleUpdateSuccess = useCallback(
     (updatedAnimal: Animal) => {
-      updateItemOnScreen<Animal>(["animals"], updatedAnimal);
+      updateItemOnScreen<Animal>(["animals"], {
+        ...updatedAnimal,
+        totalCost: calculateNewTotalCost(updatedAnimal),
+      });
     },
     [updateItemOnScreen],
   );
+
+  const calculateNewTotalCost = (animal: Animal): number => {
+    const expenses = animal?.expenses ?? [];
+
+    return expenses?.reduce((total, e) => {
+      return total + Number(e.value || 0);
+    }, 0);
+  };
 
   const handleDeleteSuccess = useCallback(
     (deletedId: string) => {
