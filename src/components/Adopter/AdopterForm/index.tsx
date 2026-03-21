@@ -95,7 +95,8 @@ export default function AdopterForm({
     canSetPrincipal,
     handleDeleteAdopter,
     handleDeleteAdopterConfirm,
-    navigate
+    navigate,
+    isCreateMode
   } = useAdopterForm({
     adopter,
     mode,
@@ -684,90 +685,95 @@ export default function AdopterForm({
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Link className="h-5 w-5" />
-              Animais Vinculados
-            </CardTitle>
-            <CardDescription>Animais associados a este adotante</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {!adopter?.animals?.length ? (
-              <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
-                Nenhum animal vinculado.
-              </p>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {adopter.animals.map((animal) => (
-                  <button
-                    key={animal.id}
-                    type="button"
-                    onClick={() => navigate(`/admin/animais`)}
-                    className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer"
-                  >
-                    <span className="font-medium truncate w-full">{animal.name}</span>
-                    {animal.breed && (
-                      <span className="text-xs text-muted-foreground truncate w-full">
-                        {animal.breed}
-                      </span>
-                    )}
-                    <div className="flex flex-wrap gap-1 mt-0.5">
-                      {animal.type && (
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                          {animal.type.type}
-                        </Badge>
-                      )}
-                      {animal.age != null && (
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                          {animal.age} {animal.age === 1 ? "ano" : "anos"}
-                        </Badge>
-                      )}
-                      {animal.castrated && (
-                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                          Castrado
-                        </Badge>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {!isCreateMode && (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Link className="h-5 w-5" />
+                  Animais Vinculados
+                </CardTitle>
+                <CardDescription>Animais associados a este adotante</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!adopter?.animals?.length ? (
+                  <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                    Nenhum animal vinculado.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {adopter.animals.map((animal) => (
+                      <button
+                        key={animal.id}
+                        type="button"
+                        onClick={() => navigate(`/admin/animais`)}
+                        className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer"
+                      >
+                        <span className="font-medium truncate w-full">{animal.name}</span>
+                        {animal.breed && (
+                          <span className="text-xs text-muted-foreground truncate w-full">
+                            {animal.breed}
+                          </span>
+                        )}
+                        <div className="flex flex-wrap gap-1 mt-0.5">
+                          {animal.type && (
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                              {animal.type.type}
+                            </Badge>
+                          )}
+                          {animal.age != null && (
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                              {animal.age} {animal.age === 1 ? "ano" : "anos"}
+                            </Badge>
+                          )}
+                          {animal.castrated && (
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                              Castrado
+                            </Badge>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Termos de Compromisso
-            </CardTitle>
-            <CardDescription>Termos associados a este adotante</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {!adopter?.terms?.length ? (
-              <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
-                Nenhum termo de compromisso vinculado.
-              </p>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {adopter.terms.map((term, index) => (
-                  <button
-                    key={term.id}
-                    type="button"
-                    onClick={() => navigate(`/admin/termos`)}
-                    className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer"
-                  >
-                    <span className="font-medium">Termo {index + 1}</span>
-                    <span className="text-xs text-muted-foreground truncate w-full">
-                      {term.id}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Termos de Compromisso
+                </CardTitle>
+                <CardDescription>Termos associados a este adotante</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!adopter?.terms?.length ? (
+                  <p className="text-sm text-muted-foreground text-center py-4 border border-dashed border-border rounded-lg">
+                    Nenhum termo de compromisso vinculado.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {adopter.terms.map((term, index) => (
+                      <button
+                        key={term.id}
+                        type="button"
+                        onClick={() => navigate(`/admin/termos`)}
+                        className="flex flex-col items-start gap-1 rounded-lg border border-border bg-background p-3 text-left text-sm transition-all hover:border-primary/60 hover:bg-muted/40 cursor-pointer"
+                      >
+                        <span className="font-medium">Termo {index + 1}</span>
+                        <span className="text-xs text-muted-foreground truncate w-full">
+                          {term.id}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
+
 
         <div className="flex justify-end space-x-4">
           <Button type="button" variant="outline" onClick={handleCloseModal}>

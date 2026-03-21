@@ -40,7 +40,7 @@ import {mapAnimalToFormData} from "@/utils/animalMapper";
 import {CreateExpenseDto, UpdateExpenseDto} from "@/types/expenses";
 import {useNavigate} from "react-router-dom";
 import {Terms} from "@/types/terms";
-import { deleteTerm } from "@/services/terms";
+import {deleteTerm} from "@/services/terms";
 
 type Props = {
   animal: AnimalFormProps["animal"];
@@ -161,6 +161,7 @@ export const useAnimalForm = ({
 
   /** Mutations */
 
+  const isCreateMode = mode === "create";
   const {mutate: createAnimalMutation} = useMutation({
     mutationFn: async (createAnimalDto: CreateAnimalDto) => {
       return (await createAnimal(createAnimalDto)).data;
@@ -534,7 +535,7 @@ export const useAnimalForm = ({
     setSelectedTermId(termId);
     handleOpenDeleteTermModal();
   };
-  
+
   const handleCloseDeleteTermModal = () => {
     setSelectedTermId("");
     handleCloseDeleteTerm();
@@ -543,7 +544,7 @@ export const useAnimalForm = ({
   const handleDeleteTermConfirm = () => {
     if (!selectedTermId) return;
     deleteTermMutation(selectedTermId);
-  }
+  };
 
   const {mutate: deleteTermMutation} = useMutation({
     mutationFn: async (id: string) => {
@@ -594,6 +595,7 @@ export const useAnimalForm = ({
     isModalDeleteTermOpen,
     handleCloseDeleteTermModal,
     handleDeleteTerm,
-    handleDeleteTermConfirm
+    handleDeleteTermConfirm,
+    isCreateMode
   };
 };

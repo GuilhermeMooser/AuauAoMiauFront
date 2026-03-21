@@ -59,6 +59,7 @@ export const useAdopterForm = ({
   const {clearError, errorMessage, setErrorMessage} = useError();
   const activeNotificationWatcher = form.watch("activeNotification");
   const isReadOnly = mode === "view";
+  const isCreateMode = mode === "create";
 
   /** ========== CONTACTS ========== */
   const {
@@ -421,6 +422,7 @@ export const useAdopterForm = ({
     getCurrentCityId,
     handleButtonConfirm,
     handleCloseModal,
-    navigate
+    navigate,
+    isCreateMode
   };
 };
