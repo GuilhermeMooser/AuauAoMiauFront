@@ -41,6 +41,7 @@ export type Animal = {
   expenses?: MinimalExpenses[];
   audit: Audit;
   totalCost?: number;
+  imageUrl?: string;
 };
 
 export type AnimalFilters = {
@@ -65,6 +66,7 @@ export type MinimalAnimal = {
   terms: Terms[];
   totalCost: number;
   size: string;
+  imageUrl?: string;
 };
 
 export type FindAllAnimalsPaginated = Pagination<MinimalAnimal>;
@@ -91,6 +93,7 @@ export type CreateAnimalDto = {
   castrated: boolean;
   expenses?: CreateExpenseDto[];
   animalProcedures?: CreateAnimalProcedureDispatcherDto[];
+  imageFile?: File | null;
 };
 
 export type UpdateAnimalDto = Omit<

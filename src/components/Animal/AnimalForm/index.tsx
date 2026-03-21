@@ -45,6 +45,7 @@ import { Animal, procedureConfig, ProcedureType } from "@/types/animal";
 import { Textarea } from "@/components/ui/textarea";
 import { AnimalProcedureEnum } from "@/types/animalProcedures";
 import { formatPrice } from "@/utils/format";
+import AnimalImageCard from "../AnimalImageCard";
 
 export type AnimalFormProps = {
     animal?: Animal;
@@ -93,7 +94,8 @@ export default function AnimalForm({
         handleDeleteTerm,
         handleCloseDeleteTermModal,
         handleDeleteTermConfirm,
-        isCreateMode
+        isCreateMode,
+        animalImageUrl,
     } = useAnimalForm(
         {
             mode,
@@ -382,6 +384,11 @@ export default function AnimalForm({
                     </CardContent>
                 </Card>
 
+                <AnimalImageCard
+                    imageUrl={animalImageUrl}
+                    isReadOnly={isReadOnly}
+                    onFileChange={(file) => form.setValue("imageFile", file)}
+                />
                 {/* ── Datas e Histórico ────────────────────────────────────── */}
                 <Card>
                     <CardHeader>

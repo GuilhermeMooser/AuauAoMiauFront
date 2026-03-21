@@ -23,7 +23,9 @@ export const animalSchema = z.object({
 
   locationOfRescue: z.string().optional(),
 
-  typeId: z.number({message: "O tipo é obrigatório"}).min(1, "O tipo é obrigatório"),
+  typeId: z
+    .number({message: "O tipo é obrigatório"})
+    .min(1, "O tipo é obrigatório"),
 
   size: z.string().nonempty("Tamanho é obrigatório"),
   gender: z.string().nonempty("Sexo é obrigatório"),
@@ -33,4 +35,14 @@ export const animalSchema = z.object({
 
   animalProcedures: z.array(animalProceduresSchema).optional(),
   expenses: z.array(minimalExpensesSchema).optional(),
+
+  imageFile: z
+    .instanceof(File)
+    .refine((f) => f.size <= 5 * 1024 * 1024, "Máximo 5MB")
+    .refine(
+      (f) => ["image/jpeg", "image/png", "image/webp"].includes(f.type),
+      "Formato inválido",
+    )
+    .nullable()
+    .optional(),
 });

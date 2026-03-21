@@ -499,6 +499,13 @@ export const useAnimalForm = ({
       );
     },
   });
+  
+  /**
+   * Image URL
+   */
+  const animalImageUrl = animal?.imageUrl
+    ? `${import.meta.env.VITE_API_URL}${animal.imageUrl}`
+    : null;
 
   return {
     form,
@@ -534,5 +541,6 @@ export const useAnimalForm = ({
     handleDeleteTerm,
     handleDeleteTermConfirm,
     isCreateMode,
+    animalImageUrl,
   };
 };

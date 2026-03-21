@@ -41,21 +41,44 @@ export const getAnimalTypes = async () => {
 };
 
 export const createAnimal = async (createAnimalDto: CreateAnimalDto) => {
-  const body = {
-    ...createAnimalDto,
-  };
+  const {imageFile, ...rest} = createAnimalDto;
 
-  const response = await api.post<Animal>("/animal/v1", body);
-  return response;
+  if (imageFile) {
+    const formData = new FormData();
+    formData.append("imageFile", imageFile);
+    formData.append("data", JSON.stringify(rest));
+    return api.post<Animal>("/animal/v1", formData, {
+      headers: {"Content-Type": "multipart/form-data"},
+    });
+  }
+
+  return api.post<Animal>("/animal/v1", rest);
 };
 
+/**
+ * ImageType:
+ *
+ * undefined: The same imageFile
+ * null: Removed imagemFile
+ * object: new imageFile
+ */
 export const updateAnimal = async (updateAnimalDto: UpdateAnimalDto) => {
-  const body = {
-    ...updateAnimalDto,
-  };;
+  const {imageFile, ...rest} = updateAnimalDto;
 
-  const response = await api.put<Animal>("/animal/v1", body);
-  return response;
+  if (imageFile) {
+    const formData = new FormData();
+    formData.append("imageFile", imageFile);
+    formData.append("data", JSON.stringify(rest));
+    return api.put<Animal>("/animal/v1", formData, {
+      headers: {"Content-Type": "multipart/form-data"},
+    });
+  }
+
+  if (imageFile === null) {
+    return api.put<Animal>("/animal/v1", {...rest, imageFile: null});
+  }
+
+  return api.put<Animal>("/animal/v1", rest);
 };
 
 export const deleteAnimal = async (id: string) => {

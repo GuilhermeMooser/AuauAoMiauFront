@@ -201,9 +201,19 @@ export default function AnimalCard({
             <CardContent className="flex-grow flex flex-col">
                 <div className="space-y-4 flex-grow flex flex-col">
                     {/* Banner */}
-                    <div className="w-full h-28 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Heart className="h-14 w-14 text-white opacity-40" />
-                    </div>
+                    {animal.imageUrl ? (
+                        <div className="rounded-lg w-full overflow-hidden bg-muted/40">
+                            <img
+                                src={`${import.meta.env.VITE_API_URL}${animal.imageUrl}`}
+                                alt={animal.name}
+                                className="w-full h-auto object-contain"
+                            />
+                        </div>
+                    ) : (
+                        <div className="w-full h-28 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Heart className="h-14 w-14 text-white opacity-40" />
+                        </div>
+                    )}
 
                     {/* Tipo + Raça */}
                     <div className="flex items-center gap-3 text-sm flex-shrink-0">
