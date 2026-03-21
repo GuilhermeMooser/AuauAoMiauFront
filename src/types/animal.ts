@@ -64,6 +64,7 @@ export type MinimalAnimal = {
   audit: Audit;
   terms: Terms[];
   totalCost: number;
+  size: string;
 };
 
 export type FindAllAnimalsPaginated = Pagination<MinimalAnimal>;

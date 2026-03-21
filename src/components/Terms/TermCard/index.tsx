@@ -82,6 +82,7 @@ import { formatDate } from "@/utils/formatDate";
 import { Button } from "@/components/ui/button";
 import { AnimalGender } from "@/types/animal";
 import { formatCPF } from "@/utils/format";
+import { openTermPDF } from "../TermPDF";
 
 export type TermCardProps = {
     term: Terms;
@@ -172,7 +173,7 @@ export default function TermCard({ term, handleEditClick, handleViewTerm }: Term
 
                     {/* Actions */}
                     <div className="flex flex-col sm:flex-row gap-2 pt-2 mt-auto">
-                        <Button variant="outline" size="sm" className="flex-1" onClick={() => { }} disabled={true}>
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => openTermPDF(term)}>
                             <FileText className="h-3 w-3 sm:mr-1" />
                             <span className="hidden sm:inline ml-1">Ver PDF</span>
                         </Button>

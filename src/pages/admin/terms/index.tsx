@@ -130,21 +130,6 @@ export default function Terms() {
                         />
                     </DialogContent>
                 </Dialog>
-                {/* Edit Modal */}
-                {/* <Dialog open={isEditModalOpen} onOpenChange={handleCloseEditModalFn}>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
-                        <DialogHeader>
-                            <DialogTitle>Editar Termo</DialogTitle>
-                        </DialogHeader>
-                        <TermForm
-                            mode="edit"
-                            term={selectedTerm}
-                            onCancel={handleCloseEditModalFn}
-                            onUpdateSuccess={handleUpdateSuccess}
-                            onDeleteSuccess={handleDeleteSuccess}
-                        />
-                    </DialogContent>
-                </Dialog> */}
                 {/* View Modal */}
                 <Dialog open={isViewModalOpen} onOpenChange={handleCloseViewModalFn}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
