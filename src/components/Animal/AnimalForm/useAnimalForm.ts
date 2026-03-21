@@ -409,76 +409,6 @@ export const useAnimalForm = ({
     });
   };
 
-  // const mapProceduresToCreateDto = (
-  //   procedures: AnimalFormData["animalProcedures"],
-  // ): CreateAnimalProcedureDispatcherDto[] => {
-  //   if (!procedures) return [];
-
-  //   return procedures.map((proc) => {
-  //     const base: BaseProcedure = {
-  //       procedureType: proc.procedureType,
-  //       dtOfProcedure: proc.dtOfProcedure,
-  //       description: proc.description,
-  //       veterinarian: proc.veterinarian,
-  //       observation: proc.observation,
-  //       expenses: proc.expenses,
-  //     };
-
-  //     switch (proc.procedureType) {
-  //       case AnimalProcedureEnum.VACCINE:
-  //         return {
-  //           ...base,
-  //           procedureType: AnimalProcedureEnum.VACCINE,
-  //           payload: {
-  //             vaccineName: proc.vaccineName ?? "",
-  //             vaccineType: proc.vaccineType,
-  //             batch: proc.batch,
-  //             manufacturer: proc.manufacturer,
-  //             dtOfExpiration: proc.dtOfExpiration,
-  //           } satisfies VaccinePayload,
-  //         };
-
-  //       case AnimalProcedureEnum.MEDICINE:
-  //         return {
-  //           ...base,
-  //           procedureType: AnimalProcedureEnum.MEDICINE,
-  //           payload: {
-  //             medicineName: proc.medicineName ?? "",
-  //             reason: proc.reason,
-  //             dosage: proc.dosage,
-  //             frequency: proc.frequency,
-  //             dtOfStart: proc.dtOfStart,
-  //             dtOfEnd: proc.dtOfEnd,
-  //           } satisfies MedicinePayload,
-  //         };
-
-  //       case AnimalProcedureEnum.SURGERY:
-  //         return {
-  //           ...base,
-  //           procedureType: AnimalProcedureEnum.SURGERY,
-  //           payload: {
-  //             surgeryName: proc.surgeryName ?? "",
-  //             surgeryType: proc.surgeryType,
-  //             local: proc.local,
-  //             reason: proc.reason,
-  //             dtOfDuration: proc.dtOfDuration,
-  //             recomendations: proc.recomendations,
-  //           } satisfies SurgeryPayload,
-  //         };
-
-  //       case AnimalProcedureEnum.MISCELLANEOUS:
-  //         return {
-  //           ...base,
-  //           procedureType: AnimalProcedureEnum.MISCELLANEOUS,
-  //           payload: {
-  //             reason: proc.reason ?? "",
-  //             recomendations: proc.recomendations,
-  //           } satisfies MiscellaneousPayload,
-  //         };
-  //     }
-  //   });
-  // };
-
   const handleCloseModal = () => {
     onCancel();
     form.reset();
@@ -551,6 +481,13 @@ export const useAnimalForm = ({
       return (await deleteTerm(id)).data;
     },
     onSuccess: () => {
+      if (onUpdateSuccess && animal) {
+        onUpdateSuccess({
+          ...animal,
+          terms: animal.terms?.filter((term) => term.id !== selectedTermId),
+        });
+      }
+
       setSelectedTermId("");
       handleCloseModal();
     },
@@ -596,6 +533,6 @@ export const useAnimalForm = ({
     handleCloseDeleteTermModal,
     handleDeleteTerm,
     handleDeleteTermConfirm,
-    isCreateMode
+    isCreateMode,
   };
 };
