@@ -14,7 +14,7 @@ const addressSchema = z.object({
     .int("Número deve ser inteiro")
     .positive("Número deve ser maior que zero")
     .optional()
-    .refine((val) => val !== undefined, { message: "Número é obrigatório" }),
+    .refine((val) => val !== undefined, {message: "Número é obrigatório"}),
   city: z.object({
     id: z.number().min(1, "Cidade é obrigatória"),
     name: z.string(),
@@ -31,7 +31,7 @@ export const adopterSchema = z.object({
   email: z.string().email("Email é obrigatório"),
   dtOfBirth: z.date("Data de nascimento é obrigatória"),
 
-  rg: z.string().min(1, "RG é obrigatório"),
+  rg: z.string().optional(),
   cpf: z.string().min(11, "CPF inválido"),
 
   contacts: z
@@ -45,7 +45,7 @@ export const adopterSchema = z.object({
 
   civilState: z.enum(
     ["solteiro", "casado", "divorciado", "viuvo", "uniao_estavel"],
-    { message: "Selecione um estado civil" }
+    {message: "Selecione um estado civil"},
   ),
   addresses: z
     .array(addressSchema)

@@ -191,7 +191,7 @@ export default function AdopterForm({
                 name="rg"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>*RG</FormLabel>
+                    <FormLabel>RG</FormLabel>
                     <FormControl>
                       <MaskedInput
                         mask="99.999.999-9"

@@ -37,7 +37,7 @@ export type Adopter = {
   id: string;
   name: string;
   dtOfBirth: Date;
-  rg: string;
+  rg?: string;
   cpf: string;
   email: string;
   contacts: AdopterContact[];
@@ -69,7 +69,7 @@ export type FindAllAdoptersPaginated = Pagination<MinimalAdopter>;
 export type CreateAdopterDto = {
   name: string;
   dtOfBirth: Date;
-  rg: string;
+  rg?: string;
   cpf: string;
   email: string;
   contacts: AdopterContact[] | null;
