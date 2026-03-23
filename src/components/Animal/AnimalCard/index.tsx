@@ -245,15 +245,17 @@ export default function AnimalCard({
                     </div>
 
                     {/* Total Cost */}
-                    <div className="space-y-1 text-sm flex-shrink-0">
-                        {animal.totalCost && (
+                    {animal.totalCost !== 0 && (
+                        <div className="space-y-1 text-sm flex-shrink-0">
+
                             <div className="flex items-center gap-2">
                                 <Coins className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                                 <span className="text-muted-foreground">Total gasto:</span>
                                 <span className="text-foreground">{formatPrice(animal.totalCost)}</span>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
+
 
                     {/* Datas */}
                     <div className="space-y-1 text-sm flex-shrink-0 min-h-[3.5rem]">
