@@ -21,9 +21,8 @@ export function useNotificationBell() {
 
   useEffect(() => {
    
-    //TODO VER COMO PEGAR A URL DE PROD
     const es = new EventSource(
-      "http://localhost:3000/api/notifications/v1/stream",
+      `${import.meta.env.VITE_APP_API_URL}/api/notifications/v1/stream`,
       {
         withCredentials: true,
       },

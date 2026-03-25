@@ -12,7 +12,7 @@ export const authenticate = (login: Login) => {
 export const logoutFront = () => {
   destroyCookie(null, "login", {
     path: "/",
-    domain: "localhost",
+    domain: import.meta.env.VITE_API_DOMAIN,
   });
 };
 
