@@ -1,3 +1,4 @@
+import { getViteApiUrl } from "@/config/runtimeEnv";
 import {getAuth} from "@/utils/auth";
 import {AnimalFormProps} from ".";
 import {useFieldArray, useForm} from "react-hook-form";
@@ -504,7 +505,7 @@ export const useAnimalForm = ({
    * Image URL
    */
   const animalImageUrl = animal?.imageUrl
-    ? `${import.meta.env.VITE_API_URL}${animal.imageUrl}`
+    ? `${getViteApiUrl()}${animal.imageUrl}`
     : null;
 
   return {

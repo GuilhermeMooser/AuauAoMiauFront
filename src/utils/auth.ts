@@ -1,3 +1,4 @@
+import { getViteApiDomain } from "@/config/runtimeEnv";
 import { parseCookies, destroyCookie, setCookie } from "nookies";
 import { Login } from "@/types/login";
 
@@ -12,7 +13,7 @@ export const authenticate = (login: Login) => {
 export const logoutFront = () => {
   destroyCookie(null, "login", {
     path: "/",
-    domain: import.meta.env.VITE_API_DOMAIN,
+    domain: getViteApiDomain(),
   });
 };
 

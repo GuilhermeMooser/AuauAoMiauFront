@@ -1,3 +1,4 @@
+import { getViteApiUrl } from "@/config/runtimeEnv";
 import { AnimalGender, MinimalAnimal } from "@/types/animal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +59,7 @@ export default function AnimalCard({
                     {animal.imageUrl ? (
                         <div className="rounded-lg w-full overflow-hidden bg-muted/40">
                             <img
-                                src={`${import.meta.env.VITE_API_URL}${animal.imageUrl}`}
+                                src={`${getViteApiUrl()}${animal.imageUrl}`}
                                 alt={animal.name}
                                 className="w-full h-auto object-contain"
                             />

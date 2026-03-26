@@ -1,4 +1,5 @@
 // hooks/useNotificationBell.ts
+import { getViteApiUrl } from "@/config/runtimeEnv";
 import {
   clearAllNotifications,
   dismissNotification,
@@ -22,7 +23,7 @@ export function useNotificationBell() {
   useEffect(() => {
    
     const es = new EventSource(
-      `${import.meta.env.VITE_API_URL}/notifications/v1/stream`,
+      `${getViteApiUrl()}/notifications/v1/stream`,
       {
         withCredentials: true,
       },

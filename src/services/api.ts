@@ -1,8 +1,9 @@
+import { getViteApiUrl } from "@/config/runtimeEnv";
 import {getAuth} from "@/utils/auth";
 import axios, {isAxiosError} from "axios";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: getViteApiUrl(),
   withCredentials: true,
 });
 
