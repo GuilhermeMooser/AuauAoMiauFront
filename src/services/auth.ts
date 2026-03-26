@@ -4,7 +4,7 @@ import { logoutFront } from "@/utils/auth";
 
 export const authLogin = async ({ email, password }: LoginDto) => {
   const response = await api.post<Login>(
-    "/auth/v1/login",
+    "https://api.doauauaomiau.com/api/auth/v1/login",
     { email, password },
     {
       headers: {
