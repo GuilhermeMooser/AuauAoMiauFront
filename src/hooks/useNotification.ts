@@ -22,7 +22,7 @@ export function useNotificationBell() {
   useEffect(() => {
    
     const es = new EventSource(
-      `${import.meta.env.VITE_API_URL}/api/notifications/v1/stream`,
+      `${import.meta.env.VITE_API_URL}/notifications/v1/stream`,
       {
         withCredentials: true,
       },
