@@ -6,7 +6,7 @@ export const authenticate = (login: Login) => {
   setCookie(null, "login", JSON.stringify(login), {
     maxAge: 1 * 60 * 60,
     path: "/",
-    // domain: "localhost", LOCALMENTE TIRA
+    domain: getViteApiDomain(),
   });
 };
 
