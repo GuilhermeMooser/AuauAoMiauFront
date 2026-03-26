@@ -8,6 +8,8 @@ export const authenticate = (login: Login) => {
     maxAge: 1 * 60 * 60,
     path: "/",
     domain: getViteApiDomain(),
+    secure: true,
+    sameSite: "lax",
   });
 };
 
