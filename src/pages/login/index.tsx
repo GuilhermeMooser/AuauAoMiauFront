@@ -71,6 +71,10 @@ export default function Login() {
             <CardContent className="px-4 sm:px-6">
               <form
                 className="space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit(handleButtonOkClick)();
+                }}
               >
                 <div className="space-y-2">
                   <Label htmlFor="username">Email</Label>
@@ -111,9 +115,14 @@ export default function Login() {
                   type="submit"
                   className="w-full"
                   size="lg"
-                  onClick={handleSubmit(handleButtonOkClick)}
+                  // onClick={(e) => {
+                  //   e.stopPropagation();
+                  //   handleSubmit(handleButtonOkClick)()
+                  // }
+                  // }
                   loading={isLoading}
                   loadingText="Entrando..."
+
                 >
                   Entrar
                 </Button>

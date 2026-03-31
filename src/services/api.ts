@@ -1,4 +1,4 @@
-import { getViteApiUrl } from "@/config/runtimeEnv";
+import {getViteApiUrl} from "@/config/runtimeEnv";
 import {getAuth} from "@/utils/auth";
 import axios, {isAxiosError} from "axios";
 
@@ -10,7 +10,9 @@ export const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isLoginRoute = error.config?.url?.includes("/auth/v1/login");
+
+    if (error.response?.status === 401 && !isLoginRoute) {
       localStorage.removeItem("authToken");
       window.location.href = "/login";
     }

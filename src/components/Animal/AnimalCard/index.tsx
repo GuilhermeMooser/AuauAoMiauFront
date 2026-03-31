@@ -18,8 +18,6 @@ export default function AnimalCard({
     handleEditClick,
     handleViewAnimal
 }: AnimalCardProps) {
-
-    console.log(animal?.totalCost)
     const isAdopted = !!animal.dtOfAdoption;
     const isDead = !!animal.dtOfDeath;
     const termsCount = animal.terms?.length ?? 0;
